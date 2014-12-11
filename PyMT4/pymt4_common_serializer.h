@@ -259,7 +259,7 @@ struct SerializeHelper
 
 
 template <typename T> 
-struct SerializeHelper <T,typename boos:t:enable_if<is_iterable<T> >::type>
+struct SerializeHelper <T,typename boost::enable_if<is_iterable<T> >::type>
 {
 	typedef typename std::remove_const<T>::type U;
 

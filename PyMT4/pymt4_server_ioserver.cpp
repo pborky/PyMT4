@@ -169,8 +169,8 @@ void IOServer::shutdown()
 void IOServer::notifyResult(const MessageTypeIdentifier&,const MessageUID& replyToUid)
 {
 	boost::mutex::scoped_lock scopedlock(_servermutex);
-
-	_onTickResults[replyToUid]->setResult(Buffer().begin(),Buffer().begin());
+	Buffer& buffer = Buffer();
+	_onTickResults[replyToUid]->setResult(buffer.begin(), buffer.end());
 }
 
 bool IOServer::dispatchOnTick(const std::string& symbol, const double& bid, const double& ask)
