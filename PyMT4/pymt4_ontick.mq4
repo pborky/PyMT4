@@ -15,12 +15,11 @@
  *
  */
 
- 
 #property copyright ""
 #property link      ""
 #import "pymt4.dll"
 
-bool pymt4_notifyOnTick(string symbol,double bid,double ask);
+bool pymt4_notifyOnTick(char symbol[],double bid,double ask);
 bool pymt4_isinitialized();
 
 int init()
@@ -35,12 +34,12 @@ int deinit()
 }
 
 int start()
-{
-
-   
-   if (pymt4_isinitialized())
-      pymt4_notifyOnTick(Symbol(),Bid,Ask);
+{ 
+   if (pymt4_isinitialized()){
+      char symbol[];
+      StringToCharArray(Symbol(), symbol);
+      pymt4_notifyOnTick(symbol,Bid,Ask);
+   }
 
    return(0);
 }
-
