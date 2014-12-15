@@ -327,7 +327,7 @@ bool evaluateCommand(int pendingCommandId)
 	      break;
       case CmdId_OrderStopLoss:
          checkSelectedTicket(pymt4_getIntArgument());
-	      pymt4_setIntResult(OrderStopLoss(),GetLastError());
+	      pymt4_setDoubleResult(OrderStopLoss(),GetLastError());
 	      break;
       case CmdId_OrdersTotal:
 	      pymt4_setIntResult(OrdersTotal(),GetLastError());
