@@ -65,6 +65,22 @@ bool RegisterOnTickHandler(const std::string& symbol,boost::python::object& hand
 	return true;
 }
 
+bool UnregisterOnTickHandler(boost::python::object& handler)
+{
+
+	if (!PyCallable_Check(handler.ptr()))
+		return false;
+
+	BOOST_FOREACH(PyOnTickHandlerList::value_type& callbackDetail, pyOnTickHandlerList)
+	{
+		if (callbackDetail.second == handler)
+		{
+			pyOnTickHandlerList.remove(callbackDetail);
+			return true;
+		}
+	}
+	return false;
+}
 
 bool Connect()
 {
@@ -197,7 +213,8 @@ BOOST_PYTHON_MODULE(PyMT4)
 		def("GetLastError",&Command::GetLastError);
 
 
-		def ("RegisterOnTickHandler",&RegisterOnTickHandler);
+		def("RegisterOnTickHandler",&RegisterOnTickHandler);
+		def("UnregisterOnTickHandler", &UnregisterOnTickHandler);
 
 		enum_<Constant>("Constant")
 			.value("PERIOD_M1",PERIOD_M1)
