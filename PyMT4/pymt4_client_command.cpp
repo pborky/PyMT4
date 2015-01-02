@@ -252,16 +252,16 @@ namespace PyMT4
 
 		/* DateTime functions */
 		Datetime TimeCurrent()
-		{return DispatchFunction<Datetime, const int32_t>()(CmdId_TimeCurrent);}
+		{return DispatchFunction<Datetime>()(CmdId_TimeCurrent);}
 
 		Datetime TimeLocal()
-		{return DispatchFunction<Datetime, const int32_t>()(CmdId_TimeLocal);}
+		{return DispatchFunction<Datetime>()(CmdId_TimeLocal);}
 
 		Datetime TimeGMT()
-		{return DispatchFunction<Datetime, const int32_t>()(CmdId_TimeGMT);}
+		{return DispatchFunction<Datetime>()(CmdId_TimeGMT);}
 
-		Datetime TimeGMTOffset()
-		{return DispatchFunction<Datetime, const int32_t>()(CmdId_TimeGMTOffset);}
+		int32_t TimeGMTOffset()
+		{return DispatchFunction<int32_t>()(CmdId_TimeGMTOffset);}
 
 
 		/* Client Terminal http://docs.mql4.com/terminal */
