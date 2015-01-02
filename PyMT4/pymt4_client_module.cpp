@@ -197,6 +197,11 @@ BOOST_PYTHON_MODULE(PyMT4)
 		def("IsVisualMode",&IsVisualMode);
 		def("UninitializeReason",&UninitializeReason);
 
+		def("TimeCurrent", &Command::TimeCurrent);
+		def("TimeLocal", &Command::TimeLocal);
+		def("TimeGMT", &Command::TimeGMT);
+		def("TimeGMTOffset", &Command::TimeGMTOffset);
+
 		def("TerminalCompany",&TerminalCompany);
 		def("TerminalName",&TerminalName);
 		def("TerminalPath",&TerminalPath);

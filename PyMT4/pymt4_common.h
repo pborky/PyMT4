@@ -194,8 +194,10 @@ namespace PyMT4 {
 		CmdId_SendMail,
 		CmdId_SendNotification,
 
-
-
+		CmdId_TimeCurrent = 7000,
+		CmdId_TimeLocal,
+		CmdId_TimeGMT,
+		CmdId_TimeGMTOffset,
 
 		CommandUnknown = 10000
 	};

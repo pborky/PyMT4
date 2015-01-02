@@ -250,6 +250,18 @@ namespace PyMT4
 		int32_t  UninitializeReason()
 		{return DispatchFunction<int32_t>()(CmdId_UninitializeReason);}
 
+		/* DateTime functions */
+		Datetime TimeCurrent()
+		{return DispatchFunction<Datetime, const int32_t>()(CmdId_TimeCurrent);}
+
+		Datetime TimeLocal()
+		{return DispatchFunction<Datetime, const int32_t>()(CmdId_TimeLocal);}
+
+		Datetime TimeGMT()
+		{return DispatchFunction<Datetime, const int32_t>()(CmdId_TimeGMT);}
+
+		Datetime TimeGMTOffset()
+		{return DispatchFunction<Datetime, const int32_t>()(CmdId_TimeGMTOffset);}
 
 
 		/* Client Terminal http://docs.mql4.com/terminal */

@@ -120,6 +120,11 @@ bool pymt4_setBoolResult(int result,int error );
 #define CmdId_SendFTP 6006
 #define CmdId_SendMail 6007
 #define CmdId_SendNotification 6008
+
+#define CmdId_TimeCurrent 7000
+#define CmdId_TimeLocal 7001
+#define CmdId_TimeGMT 7002
+#define CmdId_TimeGMTOffset 7003
 		
 void checkSelectedTicket(int ticketId)
 {
@@ -442,7 +447,22 @@ bool evaluateCommand(int pendingCommandId)
       case CmdId_SendNotification:
 	      pymt4_setBoolResult(SendNotification(pymt4_getStringArgument(StrBuffer)),GetLastError());  
 	      break;
-   }
+		  
+ 	   /* DateTime functions */
+	   
+	   case CmdId_TimeCurrent:	      
+	      pymt4_setIntResult(TimeCurrent(),GetLastError());
+	      break;
+	   case CmdId_TimeLocal:	      
+	      pymt4_setIntResult(TimeLocal(),GetLastError());
+	      break;
+	   case CmdId_TimeGMT:
+	      pymt4_setIntResult(TimeGMT(),GetLastError());
+	      break;
+	   case CmdId_TimeGMTOffset:
+	      pymt4_setIntResult(TimeGMTOffset(),GetLastError());
+	      break;
+  }
    
     return(true);
 }

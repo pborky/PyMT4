@@ -127,6 +127,11 @@ namespace PyMT4
 		bool IsVisualMode();
 		int  UninitializeReason();
 
+		/* Date Time functions */
+		Datetime TimeCurrent();
+		Datetime TimeLocal();
+		Datetime TimeGMT();
+		int32_t TimeGMTOffset();
 
 		/* Client Terminal http://docs.mql4.com/terminal */
 
