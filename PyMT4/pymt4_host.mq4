@@ -125,7 +125,9 @@ bool pymt4_setBoolResult(int result,int error );
 #define CmdId_TimeLocal 7001
 #define CmdId_TimeGMT 7002
 #define CmdId_TimeGMTOffset 7003
-		
+
+#define CmdId_RefreshRates 9000		
+
 void checkSelectedTicket(int ticketId)
 {
    static int lastTicketId = 0;
@@ -462,6 +464,10 @@ bool evaluateCommand(int pendingCommandId)
 	   case CmdId_TimeGMTOffset:
 	      pymt4_setIntResult(TimeGMTOffset(),GetLastError());
 	      break;
+		  
+	   case CmdId_RefreshRates:	      
+	      return pymt4_setBoolResult(RefreshRates(), GetLastError());
+	      break;		
   }
    
     return(true);

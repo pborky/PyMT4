@@ -199,6 +199,8 @@ namespace PyMT4 {
 		CmdId_TimeGMT,
 		CmdId_TimeGMTOffset,
 
+		CmdId_RefreshRates = 9000,
+
 		CommandUnknown = 10000
 	};
 	

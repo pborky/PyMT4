@@ -144,7 +144,7 @@ namespace PyMT4
 		bool Alert(const std::string&);
 		bool Comment(const std::string&);
 		bool Print(const std::string&);
-
+		bool RefreshRates();
 
 
 		int32_t GetTickCount();

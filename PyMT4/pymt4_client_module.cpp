@@ -216,7 +216,7 @@ BOOST_PYTHON_MODULE(PyMT4)
 		def("SendMail",&SendMail);
 		def("SendNotification",&SendNotification);
 		def("GetLastError",&Command::GetLastError);
-
+		def("RefreshRates", &Command::RefreshRates);
 
 		def("RegisterOnTickHandler",&RegisterOnTickHandler);
 		def("UnregisterOnTickHandler", &UnregisterOnTickHandler);

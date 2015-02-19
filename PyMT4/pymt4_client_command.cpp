@@ -276,6 +276,8 @@ namespace PyMT4
 		{return DispatchFunction<std::string>()(CmdId_TerminalPath);};
 
 		/* Common Functions */
+		bool RefreshRates()
+		{return DispatchFunction<bool>()(CmdId_RefreshRates);}
 
 		bool Alert(const std::string& alert)
 		{ return DispatchFunction<bool,const std::string>()(CmdId_Alert,alert);}
