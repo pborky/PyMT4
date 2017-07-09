@@ -62,7 +62,7 @@ void IOSessionCommon::readHeader()
 	boost::mutex::scoped_lock scopedLock(_sessionMutex);
 	m_readBuffer.clear();
 	m_readBuffer.resize(IO_HEADER_SIZE);
-	async_read(m_socket,buffer(m_readBuffer),bind(&IOSessionCommon::headerHandler,shared_from_this(),placeholders::error));
+	async_read(m_socket,buffer(m_readBuffer),bind(&IOSessionCommon::headerHandler,shared_from_this(), boost::asio::placeholders::error));
 
 }
 
@@ -74,7 +74,7 @@ void IOSessionCommon::writeMessage(MessageHeaderPtr message)
 	size_t payloadSize = messageBuffer.size() - IO_HEADER_SIZE;
 	(*reinterpret_cast<size_t*>(messageBuffer.data()+sizeof(MessageTypeIdentifier))) = payloadSize;
 
-	async_write(m_socket,buffer(message->messageBuffer()),bind(&IOSessionCommon::writeHandler,shared_from_this(),message,placeholders::error));
+	async_write(m_socket,buffer(message->messageBuffer()),bind(&IOSessionCommon::writeHandler,shared_from_this(),message, boost::asio::placeholders::error));
 }
 
 void IOSessionCommon::writeHandler(MessageHeaderPtr message,const boost::system::error_code& error)
@@ -97,7 +97,7 @@ void IOSessionCommon::headerHandler(const boost::system::error_code& error)
 		size_t							messageContentSize;
 
 		Serializer<MessageTypeIdentifier>::deserializeItem(&messageTypeIdentifier,&readBufferIter);
-		Serializer<uint32_t>::deserializeItem(&messageContentSize,&readBufferIter);
+		Serializer<size_t>::deserializeItem(&messageContentSize,&readBufferIter);
 
 		MessageUID messageuid;
 		size_t msguuid_size=0;
@@ -113,7 +113,7 @@ void IOSessionCommon::headerHandler(const boost::system::error_code& error)
 			buffer(&m_readBuffer[IO_HEADER_SIZE],
 				   messageContentSize),
 			transfer_at_least(messageContentSize),
-			bind(&IOSessionCommon::messageHandler,shared_from_this(),messageuid,messageTypeIdentifier,placeholders::error));
+			bind(&IOSessionCommon::messageHandler,shared_from_this(),messageuid,messageTypeIdentifier, boost::asio::placeholders::error));
 	}
 
 }
