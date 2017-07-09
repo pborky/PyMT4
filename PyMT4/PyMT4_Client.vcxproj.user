@@ -11,7 +11,7 @@
     <LocalDebuggerCommandArguments>"$(SolutionDir)\PyMT4_test.py"</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommand>C:\Python\Python27\x32\python.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>C:\Python27\python.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommandArguments>"C:\Projects\Eclipse\TradeTools\TradeManager.py"</LocalDebuggerCommandArguments>
   </PropertyGroup>

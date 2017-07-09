@@ -146,7 +146,7 @@
       <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)$(Configuration)\pymt4.dll" "C:\Program Files (x86)\MetaTrader - Alpari UK\experts\libraries\pymt4.dll"</Command>
+      <Command>xcopy /y "$(SolutionDir)$(Configuration)\pymt4.dll" "C:\Users\kwlam\AppData\Roaming\MetaQuotes\Terminal\665808C9038917B2C1B3E26FB0012C0E\MQL4\Libraries\pymt4.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
