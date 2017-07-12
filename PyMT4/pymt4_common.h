@@ -72,7 +72,7 @@ namespace PyMT4 {
 	struct MT4String
 	{
 		int32_t               len;
-		char             *string;
+		char              *string;
 	};
 
 	#pragma pack(push,1)

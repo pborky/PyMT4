@@ -280,31 +280,31 @@ namespace PyMT4
 		{return DispatchFunction<bool>()(CmdId_RefreshRates);}
 
 		bool Alert(const std::string& alert)
-		{ return DispatchFunction<bool,const std::string>()(CmdId_Alert,alert);}
+		{ return DispatchFunction<bool, const std::string>()(CmdId_Alert, alert);}
 
 		bool Print(const std::string& print)
-		{ return DispatchFunction<bool,const std::string>()(CmdId_Print,print);}
+		{ return DispatchFunction<bool, const std::string>()(CmdId_Print, print);}
 
 		bool Comment(const std::string& comment)
-		{ return DispatchFunction<bool,const std::string>()(CmdId_Comment,comment);}
+		{ return DispatchFunction<bool, const std::string>()(CmdId_Comment, comment);}
 
 		int32_t GetTickCount()
 		{return DispatchFunction<int32_t>()(CmdId_GetTickCount);}
 
-		double MarketInfo(const std::string& symbol,const int& type)
-		{return DispatchFunction<double,const std::string,const int>()(CmdId_MarketInfo,symbol,type);}
+		double MarketInfo(const std::string& symbol, const int& type)
+		{return DispatchFunction<double,const std::string, const int>()(CmdId_MarketInfo, symbol, type);}
 
 		bool PlaySound(const std::string& filename)
-		{return DispatchFunction<bool,const std::string>()(CmdId_PlaySound,filename);}
+		{return DispatchFunction<bool,const std::string>()(CmdId_PlaySound, filename);}
 
-		bool SendFTP(const std::string& filename,const std::string& ftp_path)
-		{return DispatchFunction<bool,const std::string,const std::string>()(CmdId_SendFTP,filename,ftp_path);}
+		bool SendFTP(const std::string& filename, const std::string& ftp_path)
+		{return DispatchFunction<bool, const std::string, const std::string>()(CmdId_SendFTP, filename, ftp_path);}
 
-		bool SendMail(const std::string& subject,const std::string& text)
-		{return DispatchFunction<bool,const std::string,const std::string>()(CmdId_SendMail,subject,text);}
+		bool SendMail(const std::string& subject, const std::string& text)
+		{return DispatchFunction<bool, const std::string, const std::string>()(CmdId_SendMail, subject, text);}
 
 		bool SendNotification(const std::string& message)
-		{return DispatchFunction<bool,const std::string>()(CmdId_SendNotification,message);}
+		{return DispatchFunction<bool, const std::string>()(CmdId_SendNotification, message);}
 
 		PyMT4::Error GetLastError()
 		{

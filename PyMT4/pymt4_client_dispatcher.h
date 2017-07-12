@@ -119,8 +119,8 @@ extern boost::mutex _lastErrorMapLock;
 extern boost::mutex _dispatchLock;
 
 
-template <typename R,BOOST_PP_REPEAT(ARG_MAX, ARG_TEMPLATE_DEC,~) > struct DispatchFunction {
-	R inline operator()( const CommandIdentifier& commandIdentifier,BOOST_PP_REPEAT(ARG_MAX,ARG_SIGNATURE_DEC,~) ){
+template <typename R,BOOST_PP_REPEAT(ARG_MAX, ARG_TEMPLATE_DEC, ~) > struct DispatchFunction {
+	R inline operator()( const CommandIdentifier& commandIdentifier, BOOST_PP_REPEAT(ARG_MAX, ARG_SIGNATURE_DEC, ~) ){
 
 		//boost::mutex::scoped_lock dispatchLock(_dispatchLock);
 
@@ -129,18 +129,18 @@ template <typename R,BOOST_PP_REPEAT(ARG_MAX, ARG_TEMPLATE_DEC,~) > struct Dispa
 									mpl::pop_front< mpl::pop_front<boost::function_types::parameter_types<this_type>>::type >::type,
 									boost::remove_reference<mpl::placeholders::_> 
 											   >::type,
-								 boost::mpl::not_<boost::is_same<mpl::placeholders::_,ignore> > 
+								 boost::mpl::not_<boost::is_same<mpl::placeholders::_, ignore> > 
 								 >::type filtered_params;
 
 		typedef boost::mpl::size<filtered_params>::type this_arity;
-		typedef mpl::zip_view< mpl::vector< filtered_params, boost::mpl::range_c<int32_t,0,this_arity::value>::type >::type >::type parameter_items;
+		typedef mpl::zip_view< mpl::vector< filtered_params, boost::mpl::range_c<int32_t, 0, this_arity::value>::type >::type >::type parameter_items;
 
 		void** arg_ptrs = NULL;
 
 		if (this_arity::value) arg_ptrs = new void*[this_arity::value];
 
 
-#		define ARG_ASSIGN(z,n,unused) AssignHelper< mpl::greater_equal<boost::integral_constant<unsigned,n>,this_arity >::type >().operator()<n>(arg_ptrs,&arg ## n);
+#		define ARG_ASSIGN(z, n, unused) AssignHelper< mpl::greater_equal<boost::integral_constant<unsigned, n>, this_arity >::type >().operator()<n>(arg_ptrs, &arg ## n);
 #		define BOOST_PP_LOCAL_MACRO(n)   ARG_ASSIGN(~, n, ~)
 #		define BOOST_PP_LOCAL_LIMITS     (0, ARG_MAX - 1)
 #		include BOOST_PP_LOCAL_ITERATE()
@@ -148,7 +148,7 @@ template <typename R,BOOST_PP_REPEAT(ARG_MAX, ARG_TEMPLATE_DEC,~) > struct Dispa
 		MessageCommandPtr messageCommand = MessageCommand::Create(commandIdentifier);
 		Buffer& messageBuffer = messageCommand->messageBuffer();
 
-		boost::mpl::for_each<parameter_items>(SerializeArgument(messageBuffer,arg_ptrs));
+		boost::mpl::for_each<parameter_items>(SerializeArgument(messageBuffer, arg_ptrs));
 
 		if (this_arity::value) delete[] arg_ptrs;
 

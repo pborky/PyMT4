@@ -50,7 +50,7 @@ m_iosWork(m_ioService),
 m_acceptor(m_ioService),
 _shutdownRequest(false)
 {	
-	m_iosThread.reset(new thread( boost::bind(&io_service::run,&m_ioService)));
+	m_iosThread.reset(new thread( boost::bind(&io_service::run, &m_ioService)));
 
 	m_acceptor.open(tcp::v4());
 	m_acceptor.bind(tcp::endpoint(tcp::v4(),DEFAULT_PORT));
@@ -66,7 +66,7 @@ void IOServer::acceptSession()
 	m_acceptor.async_accept(pendingSession->socket(),bind(&IOServer::acceptHandler,this,pendingSession,asio::placeholders::error));
 }
 
-void IOServer::acceptHandler(IOSessionPtr session,const system::error_code& error)
+void IOServer::acceptHandler(IOSessionPtr session, const system::error_code& error)
 {
 	if(!error)
 	{
@@ -78,12 +78,12 @@ void IOServer::acceptHandler(IOSessionPtr session,const system::error_code& erro
 }
 
 
-void IOServer::registerChartWindow(const char* chartName,HWND chartHandle )
+void IOServer::registerChartWindow(const std::string& chartName, HWND chartHandle)
 {
-	_registeredWindowList[chartName] = chartHandle;
+	_registeredWindowList[chartName.c_str()] = chartHandle;
 }
 
-void IOServer::chartWindowNotify(const char* chartName,HWND chartHandle)
+void IOServer::chartWindowNotify(const std::string& chartName, HWND chartHandle)
 {
 	//BOOST_FOREACH(IOSessionList::value_type sessionData,_sessionList)
 	//{
@@ -97,9 +97,9 @@ void IOServer::chartWindowNotify(const char* chartName,HWND chartHandle)
 
 void IOServer::requestChartsUpdate()
 {
-	BOOST_FOREACH(ChartWindowList::value_type chartWindowData,_registeredWindowList)
+	BOOST_FOREACH(ChartWindowList::value_type chartWindowData, _registeredWindowList)
 	{
-		PostMessageA(chartWindowData.second,IOServer::WindowUpdateMsg,2,1);
+		PostMessageA(chartWindowData.second, IOServer::WindowUpdateMsg, 2, 1);
 	}
 
 }
@@ -136,14 +136,14 @@ int32_t IOServer::pendingCommand()
 
 
 
-const char* IOServer::getStringArgument(char* stringbuffer)
+const std::string& IOServer::getStringArgument(std::string& stringbuffer)
 {
 	std::string result;
-	Serializer<std::string>::deserializeItem(&result,&_currentCommand->dataPos);
+	Serializer<std::string>::deserializeItem(&result, &_currentCommand->dataPos);
 
-	std::copy(result.begin(),result.end(),stringbuffer);
+	std::copy(result.begin(), result.end(), std::back_inserter(stringbuffer));
 	stringbuffer[result.size()] = NULL;
-	
+
 	return stringbuffer;
 }
 

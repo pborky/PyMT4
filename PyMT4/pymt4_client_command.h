@@ -96,7 +96,7 @@ namespace PyMT4
 								const int32_t& slippage, 
 								const double& stoploss, 
 								const double& takeprofit, 
-								const std::string& comment="",
+								const std::string& comment = "",
 								const int32_t& magic=0,
 								const Datetime& expiration=DATETIME_DEFAULT,
 								const Color& arrow_color=CLR_NONE

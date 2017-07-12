@@ -47,10 +47,10 @@ namespace PyMT4
 	DECLARE(IOServer);
 	DECLARE(IOSession);
 	
-	typedef std::map<IOSessionID,IOSession*>		  IOSessionMap;
-	typedef std::map<std::string,HWND>				  ChartWindowList;
-	typedef std::deque<PendingCommandPtr>	PendingCommandList;
-	typedef std::map<MessageUID,PendingResultPtr> OnTickResultList;
+	typedef std::map<IOSessionID, IOSession*>	IOSessionMap;
+	typedef std::map<std::string, HWND>		ChartWindowList;
+	typedef std::deque<PendingCommandPtr>		PendingCommandList;
+	typedef std::map<MessageUID, PendingResultPtr> OnTickResultList;
 
 	class IOServer : public boost::noncopyable
 	{
@@ -91,8 +91,8 @@ namespace PyMT4
 		static int32_t WindowUpdateMsg;
 		static IOServerPtr		Instance(); 
 
-		void registerChartWindow(const char* chartName,HWND chartHandle);
-		void chartWindowNotify(const char* chartName,HWND chartHandle);
+		void registerChartWindow(const std::string& chartName, HWND chartHandle);
+		void chartWindowNotify(const std::string& chartName,HWND chartHandle);
 		void requestChartsUpdate();
 		int32_t  requestPendingCommand();
 
@@ -106,22 +106,21 @@ namespace PyMT4
 			return result;
 		}
 
-		const char* getStringArgument(char* stringbuffer);
+		const std::string& getStringArgument(std::string& stringbuffer);
 
 		void shutdown();
 		void queueCommand(PendingCommandPtr pendingCommand);
 		int32_t pendingCommand();
 
-		template <typename T> bool completeCommand(const T& result,const int32_t& error)
+		template <typename T> bool completeCommand(const T& result, const int32_t& error)
 		{
-
 			boost::mutex::scoped_lock scopedLock(_servermutex);
-			
-			MessageResultPtr resultMessage = MessageResult::Create(MessageCommandType,_currentCommand->messageUID);
 
-			Serializer<int32_t>::serializeItem(&(const_cast<int32_t&>(error)),&resultMessage->messageBuffer());
+			MessageResultPtr resultMessage = MessageResult::Create(MessageCommandType, _currentCommand->messageUID);
 
-			Serializer<T>::serializeItem(&(const_cast<T&>(result)),&resultMessage->messageBuffer());
+			Serializer<int32_t>::serializeItem(&(const_cast<int32_t&>(error)), &resultMessage->messageBuffer());
+
+			Serializer<T>::serializeItem(&(const_cast<T&>(result)), &resultMessage->messageBuffer());
 			IOSessionPtr session = _currentCommand->session.lock();
 			if (session)
 				session->writeMessage(resultMessage);
@@ -130,10 +129,7 @@ namespace PyMT4
 			_processCondition.notify_all();
 
 			return true;
-
 		}
-
-
 	};
 
 }

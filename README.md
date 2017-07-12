@@ -17,13 +17,14 @@ Prerequisites:
  - Compile MSVC to Release Win32 configuration.
  - Metatrader has a chart running pymt4_host.mq4, allowing execution of 32-bit dll calls.
  - PyMT4.pyd is available on PYTHONPATH
- - Run Python 32-bit with the following commands:
 
-    from PyMT4 import *
+Launch Python 32-bit and enter the following commands:
+from PyMT4 import *
 
-	Connect()
-    AccountNumber()
-	Disconnect()
+Connect()
+Print('OK')
+AccountNumber()
+Disconnect()
 
 
 The PyMT4 module contains most of the API. Custom Indicators are not yet supported, but
@@ -44,9 +45,10 @@ implementation.
 Compiling -
 
 This project uses boost heavily and you will need to optain a copy from www.boost.org. Look for pre-built binaries.
-PyMT4 was built using Visual Studio 2015 and most of customisation of your paths
-should be limited to modifying the PyMT4_Properties.props property sheet.
-For server build, remember to change the copy file path to Metatrader libraries in MSVC Post-Build Event.
+PyMT4 was built using Visual Studio 2015 and most of customization of your paths
+should be:
+- Modify the PyMT4_Properties.props property sheet
+- For server build, remember to change the copy file path to Metatrader libraries in MSVC Post-Build Event.
 
 Other thoughts -
 
@@ -56,7 +58,8 @@ slow to proxy (too many MQL calls), in addition to the raw API. And allow these 
 dynamically exposed to Python via this framework. This would only be of use if the routine
 in question actually needed to make a significant amount of MQL api calls.
 
-The command execution rate was extremely good the last time I measured it, in the high thousands
-of commands per second.
+Last tested the command execution rate is averaging from 500 to 588 command per second. Quite impressive!
 
 The precompiled samples are 32-bit and compiled against Boost 32-bit and Python 2.7 32-bit.
+
+Good luck in your trading.
