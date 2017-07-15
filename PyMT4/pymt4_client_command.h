@@ -34,20 +34,16 @@ namespace PyMT4 { \
 
 namespace PyMT4
 {
-
-
 	namespace Command
 	{
-
 		/* Account information http://docs.mql4.com/account */
-
 		double		AccountBalance();
 		double		AccountCredit();
 		std::string AccountCompany();
 		std::string AccountCurrency();
 		double		AccountEquity();
 		double		AccountFreeMargin();
-		double		AccountFreeMarginCheck(const std::string& symbol,const int32_t& cmd,const double& volume);
+		double		AccountFreeMarginCheck(const std::string& symbol, const int32_t& cmd, const double& volume);
 		double		AccountFreeMarginMode();
 		int32_t		AccountLeverage();
 		double		AccountMargin();
@@ -58,8 +54,8 @@ namespace PyMT4
 		int32_t		AccountStopoutLevel();
 		int32_t		AccountStopoutMode();
 
-		/* Timeseries Access http://docs.mql4.com/series */
 
+		/* Timeseries Access http://docs.mql4.com/series */
 		int32_t		iBars(const std::string& symbol,const int32_t& timeframe);
 		int32_t		iBarShift(const std::string& symbol,const Datetime& datetime,const bool& exact=false);
 		double		iClose(const std::string& symbol,const int32_t& timeframe, const int32_t& shift);
@@ -71,8 +67,8 @@ namespace PyMT4
 		Datetime    iTime(const std::string& symbol, const int32_t& timeframe, const int32_t& shift);
 		double		iVolume(const std::string& symbol, const int32_t& timeframe, const int32_t& shift);
 
-		/*  Trading functions http://docs.mql4.com/trading */
 
+		/*  Trading functions http://docs.mql4.com/trading */
 		bool		OrderClose(const int32_t& ticket, const double& lots,const double& price, const int32_t& slippage, const Color& Color=CLR_NONE);
 		bool		OrderCloseBy(const int32_t& ticket, const double& opposite,const Color& Color=CLR_NONE);
 		double		OrderClosePrice(const int32_t& ticket);		/* OrderSelect() */
@@ -111,9 +107,8 @@ namespace PyMT4
 		int32_t		OrderTicket(const int32_t& ticket);		 /* OrderSelect() */
 		int32_t		OrderType(const int32_t& ticket);		 /* OrderSelect() */
 
-		/* Checkup - http://docs.mql4.com/check/ */
 
-		//int32_t GetLastError();
+		/* Checkup - http://docs.mql4.com/check/ */
 		bool IsConnected();
 		bool IsDemo();
 		bool IsDllsAllowed();
@@ -127,20 +122,21 @@ namespace PyMT4
 		bool IsVisualMode();
 		int  UninitializeReason();
 
+
 		/* Date Time functions */
 		Datetime TimeCurrent();
 		Datetime TimeLocal();
 		Datetime TimeGMT();
 		int32_t TimeGMTOffset();
 
-		/* Client Terminal http://docs.mql4.com/terminal */
 
+		/* Client Terminal http://docs.mql4.com/terminal */
 		std::string TerminalCompany();
 		std::string TerminalName();
 		std::string TerminalPath();
 
-		/* Common Functions  http://docs.mql4.com/common */
 
+		/* Common Functions  http://docs.mql4.com/common */
 		bool Alert(const std::string&);
 		bool Comment(const std::string&);
 		bool Print(const std::string&);
@@ -148,13 +144,72 @@ namespace PyMT4
 
 
 		int32_t GetTickCount();
-		double MarketInfo(const std::string& symbol,const int& type);
+		double MarketInfo(const std::string& symbol, const int& type);
 		bool PlaySound(const std::string& filename);
-		bool SendFTP(const std::string& filename,const std::string& ftp_path);
-		bool SendMail(const std::string& subject,const std::string& text);
+		bool SendFTP(const std::string& filename, const std::string& ftp_path);
+		bool SendMail(const std::string& subject, const std::string& text);
 		bool SendNotification(const std::string& message); 
+		std::string Symbol(void);
+		int32_t Period(void);
+
+		/* Technical Indicators https://docs.mql4.com/indicators */
+		double iAC(const std::string& symbol, const int& timeframe, const int& shift);
+		double iAD(const std::string& symbol, const int& timeframe, const int& shift);
+		double iADX(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& mode, const int& shift);
+		double iAlligator
+		(
+			const std::string& symbol,
+			const int& timeframe,
+			const int& jaw_period,
+			const int& jaw_shift,
+			const int& teeth_period,
+			const int& teeth_shift,
+			const int& lips_period,
+			const int& lips_shift,
+			const int& ma_method,
+			const int& applied_price,
+			const int& mode,
+			const int& shift
+		);
+		double iAO(const std::string& symbol, const int& timeframe, const int& shift);
+		double iATR(const std::string& symbol, const int& timeframe, const int& period, const int& shift);
+		double iBearsPower(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
+		double iBands(const std::string& symbol, const int& timeframe, const int& period, const double& deviation, const int& bands_shift, const int& applied_price, const int& mode, const int& shift);
+		double iCCI(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
+		double iDeMarker(const std::string& symbol, const int& timeframe, const int& period, const int& shift);
+		double iEnvelopes(const std::string& symbol, const int& timeframe, const int& ma_period, const int& ma_method, const int& ma_shift, const int& applied_price, const double& deviation, const int& mode, const int& shift);
+		double iForce(const std::string& symbol, const int& timeframe, const int& period, const int& ma_method, const int& applied_price, const int& shift);
+		double iFractals(const std::string& symbol, const int& timeframe, const int& mode, const int& shift);
+		double iGator
+		(
+			const std::string& symbol,
+			const int& timeframe,
+			const int& jaw_period,
+			const int& jaw_shift,
+			const int& teeth_period,
+			const int& teeth_shift,
+			const int& lips_period,
+			const int& lips_shift,
+			const int& ma_method,
+			const int& applied_price,
+			const int& mode,
+			const int& shift
+		);
+		double iIchimoku(const std::string& symbol, const int& timeframe, const int& tenkan_sen, const int& kijun_sen, const int& senkou_span_b, const int& mode, const int& shift);
+		double iBWMFI(const std::string& symbol, const int& timeframe, const int& shift);
+		double iMomentum(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
+		double iMFI(const std::string& symbol, const int& timeframe, const int& period, const int& shift);
+		double iMA(const std::string& symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift);
+		double iOsMA(const std::string& symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& shift);
+		double iMACD(const std::string& symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& mode, const int& shift);
+		double iOBV(const std::string& symbol, const int& timeframe, const int& applied_price, const int& shift);
+		double iRSI(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
+		double iRVI(const std::string& symbol, const int& timeframe, const int& mode, const int& shift);
+		double iSAR(const std::string& symbol, const int& timeframe, const double& sar_step, const double& maximum, const int& shift);
+		double iStdDev(const std::string& symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift);
+		double iStochastic(const std::string& symbol, const int& timeframe, const int& Kperiod, const int& Dperiod, const int& slowing, const int& method, const int& price_field, const int& mode, const int& shift);
+		double iWPR(const std::string& symbol, const int& timeframe, const int& period, const int& shift);
 
 		PyMT4::Error GetLastError();
-
 	}
 }

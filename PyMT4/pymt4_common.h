@@ -127,7 +127,7 @@ namespace PyMT4 {
 		CmdId_AccountStopoutLevel,
 		CmdId_AccountStopoutMode,
 
-		CmdId_iBars = 2000,
+		CmdId_iBars = 1100,
 		CmdId_iBarShift,
 		CmdId_iClose,
 		CmdId_iHigh,
@@ -138,7 +138,7 @@ namespace PyMT4 {
 		CmdId_iTime,
 		CmdId_iVolume,
 
-		CmdId_OrderClose = 3000,
+		CmdId_OrderClose = 1200,
 		CmdId_OrderCloseBy,
 		CmdId_OrderClosePrice,
 		CmdId_OrderCloseTime,
@@ -164,7 +164,7 @@ namespace PyMT4 {
 		CmdId_OrderTicket,
 		CmdId_OrderType,
 
-		CmdId_IsConnected = 4000,
+		CmdId_IsConnected = 1300,
 		CmdId_IsDemo,
 		CmdId_IsDllsAllowed,
 		CmdId_IsExpertEnabled,
@@ -177,14 +177,13 @@ namespace PyMT4 {
 		CmdId_IsVisualMode,
 		CmdId_UninitializeReason,
 
-		CmdId_TerminalCompany = 5000,
+		CmdId_TerminalCompany = 1400,
 		CmdId_TerminalName,
 		CmdId_TerminalPath,
 
+
 		/* Common Functions http://docs.mql4.com/common */
-
-
-		CmdId_Alert = 6000,
+		CmdId_Alert = 1500,
 		CmdId_Comment,
 		CmdId_GetTickCount,
 		CmdId_MarketInfo,
@@ -193,11 +192,42 @@ namespace PyMT4 {
 		CmdId_SendFTP,
 		CmdId_SendMail,
 		CmdId_SendNotification,
+		CmdId_Symbol,
+		CmdId_Period,
 
-		CmdId_TimeCurrent = 7000,
+		CmdId_TimeCurrent = 1600,
 		CmdId_TimeLocal,
 		CmdId_TimeGMT,
 		CmdId_TimeGMTOffset,
+
+		CmdId_iAC = 1700,
+		CmdId_iAD,
+		CmdId_iADX,
+		CmdId_iAlligator,
+		CmdId_iAO,
+		CmdId_iATR,
+		CmdId_iBearsPower,
+		CmdId_iBands,
+		CmdId_iCCI,
+		CmdId_iDeMarker,
+		CmdId_iEnvelopes,
+		CmdId_iForce,
+		CmdId_iFractals,
+		CmdId_iGator,
+		CmdId_iIchimoku,
+		CmdId_iBWMFI,
+		CmdId_iMomentum,
+		CmdId_iMFI,
+		CmdId_iMA,
+		CmdId_iOsMA,
+		CmdId_iMACD,
+		CmdId_iOBV,
+		CmdId_iRSI,
+		CmdId_iRVI,
+		CmdId_iSAR,
+		CmdId_iStdDev,
+		CmdId_iStochastic,
+		CmdId_iWPR,
 
 		CmdId_RefreshRates = 9000,
 
@@ -209,6 +239,7 @@ namespace PyMT4 {
 	{
 		SELECT_BY_POS = 0,
 		SELECT_BY_TICKET = 1,
+		PERIOD_CURRENT = 0,
 		PERIOD_M1  = 1,
 		PERIOD_M5  = 5,
 		PERIOD_M15 = 15,
@@ -299,6 +330,9 @@ namespace PyMT4 {
 		MODE_EMA = 1,
 		MODE_SMMA = 2,
 		MODE_LWMA = 3,
+		MODE_GATORJAW = 1,
+		MODE_GATORTEETH = 2,
+		MODE_GATORLIPS = 3,
 		_IDOK = 1,
 		_IDCANCEL = 2,
 		_IDABORT = 3,

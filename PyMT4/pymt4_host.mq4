@@ -23,89 +23,127 @@
 // Size of temporary buffer used to communicate with DLL
 #define DLL_READ_BUFFER_SIZE  1024
 
-#define CmdId_CheckShutdownCondition 100
+enum CmdIdType
+{
+    CmdId_CheckShutdownCondition = 100,
 
-#define CmdId_AccountBalance 1000
-#define CmdId_AccountCredit 1001
-#define CmdId_AccountCompany 1002
-#define CmdId_AccountCurrency 1003
-#define CmdId_AccountEquity 1004
-#define CmdId_AccountFreeMargin 1005
-#define CmdId_AccountFreeMarginCheck 1006
-#define CmdId_AccountFreeMarginMode 1007
-#define CmdId_AccountLeverage 1008
-#define CmdId_AccountMargin 1009
-#define CmdId_AccountName 1010
-#define CmdId_AccountNumber 1011
-#define CmdId_AccountProfit 1012
-#define CmdId_AccountServer 1013
-#define CmdId_AccountStopoutLevel 1014
-#define CmdId_AccountStopoutMode 1015
+    CmdId_AccountBalance = 1000,
+    CmdId_AccountCredit,
+    CmdId_AccountCompany,
+    CmdId_AccountCurrency,
+    CmdId_AccountEquity,
+    CmdId_AccountFreeMargin,
+    CmdId_AccountFreeMarginCheck,
+    CmdId_AccountFreeMarginMode,
+    CmdId_AccountLeverage,
+    CmdId_AccountMargin,
+    CmdId_AccountName,
+    CmdId_AccountNumber,
+    CmdId_AccountProfit,
+    CmdId_AccountServer,
+    CmdId_AccountStopoutLevel,
+    CmdId_AccountStopoutMode,
 
-#define CmdId_iBars 2000
-#define CmdId_iBarShift 2001
-#define CmdId_iClose 2002
-#define CmdId_iHigh 2003
-#define CmdId_iHighest 2004
-#define CmdId_iLow 2005
-#define CmdId_iLowest 2006
-#define CmdId_iOpen 2007
-#define CmdId_iTime 2008
-#define CmdId_iVolume 2009
+    CmdId_iBars = 1100,
+    CmdId_iBarShift,
+    CmdId_iClose,
+    CmdId_iHigh,
+    CmdId_iHighest,
+    CmdId_iLow,
+    CmdId_iLowest,
+    CmdId_iOpen,
+    CmdId_iTime,
+    CmdId_iVolume,
 
-#define CmdId_OrderClose 3000
-#define CmdId_OrderCloseBy 3001
-#define CmdId_OrderClosePrice 3002
-#define CmdId_OrderCloseTime 3003
-#define CmdId_OrderComment 3004
-#define CmdId_OrderCommission 3005
-#define CmdId_OrderDelete 3006
-#define CmdId_OrderExpiration 3007
-#define CmdId_OrderLots 3008
-#define CmdId_OrderMagicNumber 3009
-#define CmdId_OrderModify 3010
-#define CmdId_OrderOpenPrice 3011
-#define CmdId_OrderOpenTime 3012
-#define CmdId_OrderPrint 3013
-#define CmdId_OrderProfit 3014
-#define CmdId_OrderSelect 3015
-#define CmdId_OrderSend 3016
-#define CmdId_OrdersHistoryTotal 3017
-#define CmdId_OrderStopLoss 3018
-#define CmdId_OrdersTotal 3019
-#define CmdId_OrderSwap 3020
-#define CmdId_OrderSymbol 3021
-#define CmdId_OrderTakeProfit 3022
-#define CmdId_OrderTicket 3023
-#define CmdId_OrderType 3024
+    CmdId_OrderClose = 1200,
+    CmdId_OrderCloseBy,
+    CmdId_OrderClosePrice,
+    CmdId_OrderCloseTime,
+    CmdId_OrderComment,
+    CmdId_OrderCommission,
+    CmdId_OrderDelete,
+    CmdId_OrderExpiration,
+    CmdId_OrderLots,
+    CmdId_OrderMagicNumber,
+    CmdId_OrderModify,
+    CmdId_OrderOpenPrice,
+    CmdId_OrderOpenTime,
+    CmdId_OrderPrint,
+    CmdId_OrderProfit,
+    CmdId_OrderSelect,
+    CmdId_OrderSend,
+    CmdId_OrdersHistoryTotal,
+    CmdId_OrderStopLoss,
+    CmdId_OrdersTotal,
+    CmdId_OrderSwap,
+    CmdId_OrderSymbol,
+    CmdId_OrderTakeProfit,
+    CmdId_OrderTicket,
+    CmdId_OrderType,
 
+    CmdId_IsConnected = 1300,
+    CmdId_IsDemo,
+    CmdId_IsDllsAllowed,
+    CmdId_IsExpertEnabled,
+    CmdId_IsLibrariesAllowed,
+    CmdId_IsOptimization,
+    CmdId_IsStopped,
+    CmdId_IsTesting,
+    CmdId_IsTradeAllowed,
+    CmdId_IsTradeContextBusy,
+    CmdId_IsVisualMode,
+    CmdId_UninitializeReason,
 
-#define CmdId_IsConnected 4000
-#define CmdId_IsDemo 4001
-#define CmdId_IsDllsAllowed 4002
-#define CmdId_IsExpertEnabled 4003
-#define CmdId_IsLibrariesAllowed 4004
-#define CmdId_IsOptimization 4005
-#define CmdId_IsStopped 4006
-#define CmdId_IsTesting 4007
-#define CmdId_IsTradeAllowed 4008
-#define CmdId_IsTradeContextBusy 4009
-#define CmdId_IsVisualMode 4010
-#define CmdId_UninitializeReason 4011
+    CmdId_TerminalCompany = 1400,
+    CmdId_TerminalName,
+    CmdId_TerminalPath,
 
-#define CmdId_TerminalCompany 5000
-#define CmdId_TerminalName 5001
-#define CmdId_TerminalPath 5002
+    CmdId_Alert = 1500,
+    CmdId_Comment,
+    CmdId_GetTickCount,
+    CmdId_MarketInfo,
+    CmdId_PlaySound,
+    CmdId_Print,
+    CmdId_SendFTP,
+    CmdId_SendMail,
+    CmdId_SendNotification,
+    CmdId_Symbol,
+    CmdId_Period,
 
-#define CmdId_Alert 6000
-#define CmdId_Comment 6001
-#define CmdId_GetTickCount 6002
-#define CmdId_MarketInfo 6003
-#define CmdId_PlaySound 6004
-#define CmdId_Print 6005
-#define CmdId_SendFTP 6006
-#define CmdId_SendMail 6007
-#define CmdId_SendNotification 6008
+    CmdId_TimeCurrent = 1600,
+    CmdId_TimeLocal,
+    CmdId_TimeGMT,
+    CmdId_TimeGMTOffset,
+
+    CmdId_iAC = 1700,
+	CmdId_iAD,
+	CmdId_iADX,
+	CmdId_iAlligator,
+	CmdId_iAO,
+	CmdId_iATR,
+	CmdId_iBearsPower,
+	CmdId_iBands,
+	CmdId_iCCI,
+	CmdId_iDeMarker,
+	CmdId_iEnvelopes,
+	CmdId_iForce,
+	CmdId_iFractals,
+	CmdId_iGator,
+	CmdId_iIchimoku,
+	CmdId_iBWMFI,
+	CmdId_iMomentum,
+	CmdId_iMFI,
+	CmdId_iMA,
+	CmdId_iOsMA,
+	CmdId_iMACD,
+	CmdId_iOBV,
+	CmdId_iRSI,
+	CmdId_iRVI,
+	CmdId_iSAR,
+	CmdId_iStdDev,
+	CmdId_iStochastic,
+	CmdId_iWPR,
+};
 
 
 #import "pymt4.dll"
@@ -204,10 +242,10 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
             int cmd = pymt4_getIntArgument();
             double volume = pymt4_getDoubleArgument();
-            pymt4_setDoubleResult(AccountFreeMarginCheck(dll_arg_string, cmd, volume), GetLastError());
+            pymt4_setDoubleResult(AccountFreeMarginCheck(symbol_string, cmd, volume), GetLastError());
             break;
         }
 
@@ -274,8 +312,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setIntResult(iBars(dll_arg_string, pymt4_getIntArgument()), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setIntResult(iBars(symbol_string, pymt4_getIntArgument()), GetLastError());
             break;
         }
 
@@ -283,8 +321,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setIntResult(iBarShift(dll_arg_string, pymt4_getIntArgument(), pymt4_getBoolArgument()), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setIntResult(iBarShift(symbol_string, pymt4_getIntArgument(), pymt4_getBoolArgument()), GetLastError());
             break;
         }
 
@@ -292,8 +330,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setDoubleResult(iClose(dll_arg_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setDoubleResult(iClose(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
@@ -301,8 +339,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setDoubleResult(iHigh(dll_arg_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setDoubleResult(iHigh(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
@@ -310,8 +348,17 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setDoubleResult(iHighest(dll_arg_string, pymt4_getIntArgument(), pymt4_getIntArgument(), pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setDoubleResult(iHighest(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument(), pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
+            break;
+        }
+
+        case CmdId_iLow:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setDoubleResult(iLow(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
@@ -319,8 +366,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setDoubleResult(iLowest(dll_arg_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setDoubleResult(iLowest(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
@@ -328,8 +375,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setDoubleResult(iOpen(dll_arg_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setDoubleResult(iOpen(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
@@ -337,8 +384,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setDoubleResult(iTime(dll_arg_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setDoubleResult(iTime(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
@@ -346,8 +393,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setDoubleResult(iVolume(dll_arg_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setDoubleResult(iVolume(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
@@ -681,8 +728,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            Alert(dll_arg_string);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            Alert(symbol_string);
             pymt4_setBoolResult(True, GetLastError());
             break;
         }
@@ -691,8 +738,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            Comment(dll_arg_string);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            Comment(symbol_string);
             pymt4_setBoolResult(True, GetLastError());
             break;
         }
@@ -707,9 +754,9 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
             int mode = pymt4_getIntArgument();
-            pymt4_setDoubleResult(MarketInfo(dll_arg_string, mode), GetLastError());
+            pymt4_setDoubleResult(MarketInfo(symbol_string, mode), GetLastError());
             break;
         }
 
@@ -717,8 +764,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            PlaySound(dll_arg_string);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            PlaySound(symbol_string);
             pymt4_setBoolResult(True, GetLastError());
             break;
         }
@@ -727,8 +774,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            Print(dll_arg_string);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            Print(symbol_string);
             pymt4_setBoolResult(True, GetLastError());
             break;
         }
@@ -737,8 +784,8 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setBoolResult(SendFTP(dll_arg_string,dll_arg_string), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setBoolResult(SendFTP(symbol_string,symbol_string), GetLastError());
             break;
         }
 
@@ -758,11 +805,454 @@ bool evaluateCommand(int pendingCommandId)
         {
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            pymt4_setBoolResult(SendNotification(dll_arg_string), GetLastError());
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            pymt4_setBoolResult(SendNotification(symbol_string), GetLastError());
             break;
         }
 
+        case CmdId_Symbol:
+        {
+            //--- Convert the strings to uchar[] arrays
+            StringToCharArray(Symbol(), ucResult);
+            pymt4_setStringResult(ucResult, GetLastError());
+            break;
+        }
+
+        case CmdId_Period:
+        {
+            pymt4_setIntResult(Period(), GetLastError());
+            break;
+        }
+
+        case CmdId_TimeCurrent:
+        {
+            pymt4_setDoubleResult(TimeCurrent(), GetLastError());
+            break;
+        }
+
+        case CmdId_TimeLocal:
+        {
+            pymt4_setDoubleResult(TimeLocal(), GetLastError());
+            break;
+        }
+
+        case CmdId_TimeGMT:
+        {
+            pymt4_setDoubleResult(TimeGMT(), GetLastError());
+            break;
+        }
+
+        case CmdId_TimeGMTOffset:
+        {
+            pymt4_setIntResult(TimeGMTOffset(), GetLastError());
+            break;
+        }
+
+        case CmdId_iAC:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iAC(symbol_string, timeframe, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iAD:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iAD(symbol_string, timeframe, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iADX:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iADX(symbol_string, timeframe, period, applied_price, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iAlligator:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int jaw_period = pymt4_getIntArgument();
+            int jaw_shift = pymt4_getIntArgument();
+            int teeth_period = pymt4_getIntArgument();
+            int teeth_shift = pymt4_getIntArgument();
+            int lips_period = pymt4_getIntArgument();
+            int lips_shift = pymt4_getIntArgument();
+            int ma_method = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iAlligator(symbol_string, timeframe, jaw_period, jaw_shift,
+                                    teeth_period, teeth_shift, lips_period, lips_shift, ma_method,
+                                    applied_price, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iAO:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iAO(symbol_string, timeframe, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iATR:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iATR(symbol_string, timeframe, period, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iBearsPower:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iBearsPower(symbol_string, timeframe, period, applied_price, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iBands:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            double deviation = pymt4_getDoubleArgument();
+            int bands_shift = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iBands(symbol_string, timeframe, period, deviation, bands_shift, applied_price, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iCCI:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iCCI(symbol_string, timeframe, period, applied_price, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iDeMarker:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iDeMarker(symbol_string, timeframe, period, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iEnvelopes:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int ma_period = pymt4_getIntArgument();
+            int ma_method = pymt4_getIntArgument();
+            int ma_shift = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            double deviation = pymt4_getDoubleArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iEnvelopes(symbol_string, timeframe, ma_period, ma_method,
+                                            ma_shift, applied_price, deviation, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iForce:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int ma_method = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iForce(symbol_string, timeframe, period, ma_method,
+                                            applied_price, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iFractals:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iFractals(symbol_string, timeframe, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iGator:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int jaw_period = pymt4_getIntArgument();
+            int jaw_shift = pymt4_getIntArgument();
+            int teeth_period = pymt4_getIntArgument();
+            int teeth_shift = pymt4_getIntArgument();
+            int lips_period = pymt4_getIntArgument();
+            int lips_shift = pymt4_getIntArgument();
+            int ma_method = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iGator(symbol_string, timeframe, jaw_period, jaw_shift,
+                                    teeth_period, teeth_shift, lips_period, lips_shift, ma_method,
+                                    applied_price, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iIchimoku:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int tenkan_sen = pymt4_getIntArgument();
+            int kijun_sen = pymt4_getIntArgument();
+            int senkou_span_b = pymt4_getIntArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iIchimoku(symbol_string, timeframe, tenkan_sen, kijun_sen,
+                                            senkou_span_b, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iBWMFI:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iBWMFI(symbol_string, timeframe, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iMomentum:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iMomentum(symbol_string, timeframe, period, applied_price, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iMFI:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iMFI(symbol_string, timeframe, period, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iMA:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int ma_period = pymt4_getIntArgument();
+            int ma_method = pymt4_getIntArgument();
+            int ma_shift = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iMA(symbol_string, timeframe, ma_period, ma_method,
+                                            ma_shift, applied_price, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iOsMA:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int fast_ema_period = pymt4_getIntArgument();
+            int slow_ema_period = pymt4_getIntArgument();
+            int signal_period = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iOsMA(symbol_string, timeframe, fast_ema_period, slow_ema_period,
+                                            signal_period, applied_price, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iMACD:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int fast_ema_period = pymt4_getIntArgument();
+            int slow_ema_period = pymt4_getIntArgument();
+            int signal_period = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iMACD(symbol_string, timeframe, fast_ema_period, slow_ema_period,
+                                            signal_period, applied_price, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iOBV:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iOBV(symbol_string, timeframe, applied_price, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iRSI:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iRSI(symbol_string, timeframe, period, applied_price, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iRVI:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iRVI(symbol_string, timeframe, period, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iSAR:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            double sar_step = pymt4_getDoubleArgument();
+            double maximum = pymt4_getDoubleArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iSAR(symbol_string, timeframe, sar_step, maximum, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iStdDev:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int ma_period = pymt4_getIntArgument();
+            int ma_shift = pymt4_getIntArgument();
+            int ma_method = pymt4_getIntArgument();
+            int applied_price = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iStdDev(symbol_string, timeframe, ma_period, ma_shift,
+                                            ma_method, applied_price, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iStochastic:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int Kperiod = pymt4_getIntArgument();
+            int Dperiod = pymt4_getIntArgument();
+            int slowing = pymt4_getIntArgument();
+            int method = pymt4_getIntArgument();
+            int price_field = pymt4_getIntArgument();
+            int mode = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iStochastic(symbol_string, timeframe, Kperiod, Dperiod,
+                                    slowing, method, price_field, mode, shift), GetLastError());
+            break;
+        }
+
+        case CmdId_iWPR:
+        {
+            //--- Load string into uchar Buffer
+            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
+            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            int timeframe = pymt4_getIntArgument();
+            int period = pymt4_getIntArgument();
+            int shift = pymt4_getIntArgument();
+            pymt4_setDoubleResult(iWPR(symbol_string, timeframe, period, shift), GetLastError());
+            break;
+        }
+
+        default:
+        {
+            PrintFormat("Received unknown (%d) command!", pendingCommandId);
+            ExpertRemove();
+        }
     }
 
     return(true);

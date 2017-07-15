@@ -215,6 +215,38 @@ BOOST_PYTHON_MODULE(PyMT4)
 		def("SendFTP",&SendFTP);
 		def("SendMail",&SendMail);
 		def("SendNotification",&SendNotification);
+		def("Symbol", &Symbol);
+		def("Period", &Period);
+
+		def("iAC", &iAC);
+		def("iAD", &iAD);
+		def("iADX", &iADX);
+		def("iAlligator", &iAlligator);
+		def("iAO", &iAO);
+		def("iATR", &iATR);
+		def("iBands", &iBands);
+		def("iBearsPower", &iBearsPower);
+		def("iCCI", &iCCI);
+		def("iDeMarker", &iDeMarker);
+		def("iEnvelopes", &iEnvelopes);
+		def("iForce", &iForce);
+		def("iFractals", &iFractals);
+		def("iGator", &iGator);
+		def("iIchimoku", &iIchimoku);
+		def("iBWMFI", &iBWMFI);
+		def("iMomentum", &iMomentum);
+		def("iMFI", &iMFI);
+		def("iMA", &iMA);
+		def("iOsMA", &iOsMA);
+		def("iMACD", &iMACD);
+		def("iOBV", &iOBV);
+		def("iRSI", &iRSI);
+		def("iRVI", &iRVI);
+		def("iSAR", &iSAR);
+		def("iStdDev", &iStdDev);
+		def("iStochastic", &iStochastic);
+		def("iWPR", &iWPR);
+
 		def("GetLastError",&Command::GetLastError);
 		def("RefreshRates", &Command::RefreshRates);
 
@@ -222,6 +254,7 @@ BOOST_PYTHON_MODULE(PyMT4)
 		def("UnregisterOnTickHandler", &UnregisterOnTickHandler);
 
 		enum_<Constant>("Constant")
+			.value("PERIOD_CURRENT", PERIOD_CURRENT)
 			.value("PERIOD_M1",PERIOD_M1)
 			.value("PERIOD_M5",PERIOD_M5)
 			.value("PERIOD_M15",PERIOD_M15)
@@ -312,6 +345,9 @@ BOOST_PYTHON_MODULE(PyMT4)
 			.value("MODE_EMA",MODE_EMA)
 			.value("MODE_SMMA",MODE_SMMA)
 			.value("MODE_LWMA",MODE_LWMA)
+			.value("MODE_GATORJAW", MODE_GATORJAW)
+			.value("MODE_GATORTEETH", MODE_GATORTEETH)
+			.value("MODE_GATORLIPS", MODE_GATORLIPS)
 			.value("IDOK",_IDOK)
 			.value("IDCANCEL",_IDCANCEL)
 			.value("IDABORT",_IDABORT)
