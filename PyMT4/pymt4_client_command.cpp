@@ -537,6 +537,11 @@ namespace PyMT4
 			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iWPR, symbol, timeframe, period, shift);
 		}
 
+		bool Set_Flow_Return_Value(const bool & flow_return_value)
+		{
+			return DispatchFunction<bool, const bool>()(CmdId_Set_Flow_Return_Value, flow_return_value);
+		}
+
 		PyMT4::Error GetLastError()
 		{
 			boost::mutex::scoped_lock errorMapLock(_lastErrorMapLock);

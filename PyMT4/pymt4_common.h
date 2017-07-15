@@ -194,6 +194,7 @@ namespace PyMT4 {
 		CmdId_SendNotification,
 		CmdId_Symbol,
 		CmdId_Period,
+		CmdId_RefreshRates,
 
 		CmdId_TimeCurrent = 1600,
 		CmdId_TimeLocal,
@@ -229,7 +230,8 @@ namespace PyMT4 {
 		CmdId_iStochastic,
 		CmdId_iWPR,
 
-		CmdId_RefreshRates = 9000,
+		/* Flow control */
+		CmdId_Set_Flow_Return_Value = 3000,
 
 		CommandUnknown = 10000
 	};

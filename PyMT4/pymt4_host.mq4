@@ -109,6 +109,7 @@ enum CmdIdType
     CmdId_SendNotification,
     CmdId_Symbol,
     CmdId_Period,
+	CmdId_RefreshRates,
 
     CmdId_TimeCurrent = 1600,
     CmdId_TimeLocal,
@@ -143,6 +144,8 @@ enum CmdIdType
 	CmdId_iStdDev,
 	CmdId_iStochastic,
 	CmdId_iWPR,
+
+	CmdId_Set_Flow_Return_Value = 3000,
 };
 
 
@@ -186,6 +189,7 @@ void checkSelectedTicket(int ticketId)
 bool evaluateCommand(int pendingCommandId)
 {
     //---
+    bool return_value = true;
     uchar ucBuffer1[DLL_READ_BUFFER_SIZE];
     uchar ucBuffer2[DLL_READ_BUFFER_SIZE];
     uchar ucResult[DLL_READ_BUFFER_SIZE];
@@ -824,6 +828,12 @@ bool evaluateCommand(int pendingCommandId)
             break;
         }
 
+        case CmdId_RefreshRates:
+        {
+            pymt4_setBoolResult(RefreshRates(), GetLastError());
+            break;
+        }
+
         case CmdId_TimeCurrent:
         {
             pymt4_setDoubleResult(TimeCurrent(), GetLastError());
@@ -1248,6 +1258,13 @@ bool evaluateCommand(int pendingCommandId)
             break;
         }
 
+        case CmdId_Set_Flow_Return_Value:
+        {
+            return_value = pymt4_getBoolArgument();
+            pymt4_setBoolResult(true, GetLastError());
+            break;
+        }
+
         default:
         {
             PrintFormat("Received unknown (%d) command!", pendingCommandId);
@@ -1255,7 +1272,7 @@ bool evaluateCommand(int pendingCommandId)
         }
     }
 
-    return(true);
+    return(return_value);
 }
 
 
@@ -1265,20 +1282,21 @@ int init()
     uchar ucResult[DLL_READ_BUFFER_SIZE];
     ArrayInitialize(ucResult, 0);
     int symbol_size = StringToCharArray(Symbol(), ucResult);
-    if(!pymt4_initialize(ucResult, WindowHandle(Symbol(), Period())))
+    if (!pymt4_initialize(ucResult, WindowHandle(Symbol(), Period())))
     {
-        Print("PyMT4 Already Intialized ...");
-        return(7);
+        Print ("PyMT4 Already Initialized ...");
+        return (7);
     }
 
-    Print("PyMT4 Host Initialized ...");
-    while (true)
+    Print ("PyMT4 Host Initialized ...");
+    bool is_continue = True;
+    while (is_continue)
     {
+        //---
         int pendingCommandId = pymt4_requestPendingCommand();
-
         if (pendingCommandId != CmdId_CheckShutdownCondition)
         {
-            evaluateCommand(pendingCommandId);
+            is_continue = evaluateCommand(pendingCommandId);
         }
 
         if (IsStopped())
@@ -1289,23 +1307,23 @@ int init()
         //--- Delay to allow user to press cancel.
         //--- Uncomment this delay if you are debugging or else it will affect performance especially
         //--- during benchmarking run.
-        //Sleep(50);
+        Sleep(50);
     }
 
     pymt4_uninitialize(ucResult, WindowHandle(Symbol(), Period()));
-    Print("PyMT4 Host Uninitialized ...");
-
-    return(False);
+    Print ("PyMT4 Host Uninitialized ...");
+    return (False);
 }
 
 
 int deinit()
 {
+    Print("Host Has Stopped");
     return(0);
 }
 
 int start()
 {
-    Print("Host Start");
+    Print("Host Has Started");
     return(0);
 }

@@ -210,6 +210,9 @@ namespace PyMT4
 		double iStochastic(const std::string& symbol, const int& timeframe, const int& Kperiod, const int& Dperiod, const int& slowing, const int& method, const int& price_field, const int& mode, const int& shift);
 		double iWPR(const std::string& symbol, const int& timeframe, const int& period, const int& shift);
 
+		/* Flow Control */
+		bool Set_Flow_Return_Value(const bool& flow_return_value);
+
 		PyMT4::Error GetLastError();
 	}
 }

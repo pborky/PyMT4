@@ -217,6 +217,7 @@ BOOST_PYTHON_MODULE(PyMT4)
 		def("SendNotification",&SendNotification);
 		def("Symbol", &Symbol);
 		def("Period", &Period);
+		def("RefreshRates", &Command::RefreshRates);
 
 		def("iAC", &iAC);
 		def("iAD", &iAD);
@@ -247,8 +248,9 @@ BOOST_PYTHON_MODULE(PyMT4)
 		def("iStochastic", &iStochastic);
 		def("iWPR", &iWPR);
 
+		def("Set_Flow_Return_Value", &Set_Flow_Return_Value);
+
 		def("GetLastError",&Command::GetLastError);
-		def("RefreshRates", &Command::RefreshRates);
 
 		def("RegisterOnTickHandler",&RegisterOnTickHandler);
 		def("UnregisterOnTickHandler", &UnregisterOnTickHandler);
