@@ -21,111 +21,153 @@
 #include <boost/pointer_cast.hpp>
 using namespace PyMT4;
 
-IOConnectorPtr IOConnector::m_instance;
+IOConnectorPtr PyMT4::IOConnector::m_instance;
 
-IOConnectorPtr IOConnector::Instance()
+IOConnectorPtr PyMT4::IOConnector::Instance()
 {
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK" << "\n";
+#endif
 	if (!m_instance)
+	{
+#ifdef _DEBUG
+		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK, m_instance.reset -> new IOConnector" << "\n";
+#endif
 		m_instance.reset(new IOConnector());
+	}
 
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " return m_instance.reset" << "\n";
+#endif
 	return m_instance;
 }
 
 
-IOSessionMap& IOConnector::sessionMap()
+IOSessionMap& PyMT4::IOConnector::sessionMap()
 {
 	return m_sessions;
 }
 
-IOConnector::IOConnector() :
+PyMT4::IOConnector::IOConnector() :
 	m_iosWork(m_ioService),
 	m_resolver(m_ioService),
 	_poolWork(_poolIOService)
 {
-	for (size_t index=0;index<16;++index)
-		_poolThreadGroup.create_thread(boost::bind(&boost::asio::io_service::run,&_poolIOService));
+	for (size_t index = 0; index < 16; ++index)
+	{
+		_poolThreadGroup.create_thread(boost::bind(&boost::asio::io_service::run, &_poolIOService));
+	}
 }
 
-bool IOConnector::connect(const string& address,const uint32_t& port)
+bool PyMT4::IOConnector::connect(const string& address, const uint32_t& port)
 {
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK -> m_iosThread.reset" << "\n";
+#endif
 
-
-	m_iosThread.reset(new thread( boost::bind(&io_service::run,&m_ioService)));
+	m_iosThread.reset(new thread( boost::bind(&io_service::run, &m_ioService)));
 
 	boost::mutex waitMutex;
 	boost::condition_variable waitCondition;
 	boost::unique_lock<mutex> uniqueLock(waitMutex);
 	bool result = false;
 
-	ConnectCallback callback( [&result,&waitMutex,&waitCondition](const bool& connectResult)
+	ConnectCallback callback( [&result, &waitMutex, &waitCondition](const bool& connectResult)
 		{	
 			boost::unique_lock<mutex> uniqueLock(waitMutex);
 			result=connectResult;
 			waitCondition.notify_all();
 			
-		} );
+		}
+	);
 
 	m_resolver.async_resolve(
 		tcp::resolver::query(address,boost::lexical_cast<std::string>(port)),
-		boost::bind(&IOConnector::resolveHandler,this,callback,asio::placeholders::error,boost::asio::placeholders::iterator));
+		boost::bind(&PyMT4::IOConnector::resolveHandler, this, callback, asio::placeholders::error, boost::asio::placeholders::iterator));
 
 	waitCondition.wait(uniqueLock);
 	return result;
 }
 
 
-void IOConnector::connect(ConnectCallback connectCallback,const string& address,const uint32_t& port)
+void PyMT4::IOConnector::connect(ConnectCallback connectCallback,const string& address,const uint32_t& port)
 {
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
 
 	m_resolver.async_resolve(
 		tcp::resolver::query(address,boost::lexical_cast<std::string>(port)),
-		boost::bind(&IOConnector::resolveHandler,this,connectCallback,asio::placeholders::error,boost::asio::placeholders::iterator));
+		boost::bind(&PyMT4::IOConnector::resolveHandler,this,connectCallback,asio::placeholders::error,boost::asio::placeholders::iterator));
 }
 
-bool IOConnector::disconnect()
+bool PyMT4::IOConnector::disconnect()
 {
-	{
-	boost::mutex::scoped_lock connectorLock(_connectorMutex);
-	BOOST_FOREACH(IOSessionMap::value_type& sessionData,m_sessions)
-	{
-		IOSession* session = sessionData.second;
-		session->disconnect();
-	}
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
 
-	m_ioService.stop();
-	_poolIOService.stop();
+	{
+		boost::mutex::scoped_lock connectorLock(_connectorMutex);
+		BOOST_FOREACH(IOSessionMap::value_type& sessionData, m_sessions)
+		{
+			IOSession* session = sessionData.second;
+			session->disconnect();
+		}
+
+		m_ioService.stop();
+		_poolIOService.stop();
 
 	}
-	if(m_iosThread)
+	if (m_iosThread)
+	{
 		m_iosThread->join();
+	}
 
 	_poolThreadGroup.join_all();
-	
 
+	PyMT4::IOConnector::m_instance.reset();
 	return true;
 }
 
-IOConnector::~IOConnector()
+PyMT4::IOConnector::~IOConnector()
 {
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
 	disconnect();
 
 }
 
 
-void IOConnector::resolveHandler(ConnectCallback connectCallback,const boost::system::error_code& error,tcp::resolver::iterator iterator)
+void PyMT4::IOConnector::resolveHandler(ConnectCallback connectCallback, const boost::system::error_code& error, tcp::resolver::iterator iterator)
 {
-	if (error || iterator == tcp::resolver::iterator()) return connectCallback(false);
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
+
+	if (error || iterator == tcp::resolver::iterator())
+	{
+		if (error)
+		{
+			std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: " << error.message() << "\n";
+		}
+		return connectCallback(false);
+	}
 
 	IOSessionPtr connectSession(new IOSession(m_ioService));
 
 	connectSession->socket().async_connect(iterator->endpoint(),
-		boost::bind(&IOConnector::connectHandler,this,connectSession,connectCallback,asio::placeholders::error));
-
+		boost::bind(&PyMT4::IOConnector::connectHandler, this, connectSession, connectCallback, asio::placeholders::error));
 }
 
 
-OnTickHandlerId IOConnector::registerOnTickHandler(const OnTickHandlerFunc& newHandler)
+OnTickHandlerId PyMT4::IOConnector::registerOnTickHandler(const OnTickHandlerFunc& newHandler)
 {
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
+
 	boost::mutex::scoped_lock connectorLock(_connectorMutex);
 
 	OnTickHandlerId newId = boost::uuids::random_generator()();
@@ -134,25 +176,34 @@ OnTickHandlerId IOConnector::registerOnTickHandler(const OnTickHandlerFunc& newH
 };
 
 
-void IOConnector::onTickDispatcher(const OnTickHandlerFunc& handlerFunc,IOSessionPtr session,const MessageUID& messageuid,const OnTickHandlerId& id,const std::string& symbol, const double& bid, const double& ask)
+void PyMT4::IOConnector::onTickDispatcher(const OnTickHandlerFunc& handlerFunc,IOSessionPtr session,const MessageUID& messageuid,const OnTickHandlerId& id,const std::string& symbol, const double& bid, const double& ask)
 {
-	handlerFunc(symbol,bid,ask);
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
+
+	handlerFunc(symbol, bid, ask);
 
 	MessageResultPtr result = MessageResult::Create(MessageEventType,messageuid);
 
 	boost::mutex::scoped_lock connectorLock(_connectorMutex);
 
 	if (_onTickHandlerList.find(id) != _onTickHandlerList.end())
+	{
 		_onTickHandlerList[id].first = false;
-	
+	}
+
 	session->writeMessage(result);
 	
 }
 
 
 
-void IOConnector::notifyOnTick(IOSessionPtr session,const MessageUID& messageuid, const std::string& symbol, const double& bid, const double& ask)
+void PyMT4::IOConnector::notifyOnTick(IOSessionPtr session,const MessageUID& messageuid, const std::string& symbol, const double& bid, const double& ask)
 {
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
 
 	BOOST_FOREACH(OnTickHandlerList::value_type& tickHandlerDetail,_onTickHandlerList)
 	{
@@ -160,29 +211,44 @@ void IOConnector::notifyOnTick(IOSessionPtr session,const MessageUID& messageuid
 		if (!tickHandlerDetail.second.first)
 		{	
 			tickHandlerDetail.second.first = true;
-			_poolIOService.post(boost::bind(&IOConnector::onTickDispatcher,shared_from_this(),tickHandlerDetail.second.second,session,messageuid,tickHandlerDetail.first,symbol,bid,ask));
+			_poolIOService.post(boost::bind(&PyMT4::IOConnector::onTickDispatcher,shared_from_this(),tickHandlerDetail.second.second,session,messageuid,tickHandlerDetail.first,symbol,bid,ask));
 		}
 	}
 
 };
 
 
-void IOConnector::connectHandler(IOSessionPtr connectSession,ConnectCallback connectCallback,const boost::system::error_code& error)
+void PyMT4::IOConnector::connectHandler(IOSessionPtr connectSession, ConnectCallback connectCallback, const boost::system::error_code& error)
 {
-	if (error)  return connectCallback(false);
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
+
+	if (error)
+	{
+		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: " << error.message() << "\n";
+		return connectCallback(false);
+	}
 
 	boost::mutex::scoped_lock connectorLock(_connectorMutex);
 
 	tcp::endpoint& remoteEndpoint = connectSession->socket().remote_endpoint();
-	m_sessions.insert(make_pair(make_pair(remoteEndpoint.address().to_v4().to_string(),remoteEndpoint.port()),connectSession.get()));
+	m_sessions.insert(make_pair(make_pair(remoteEndpoint.address().to_v4().to_string(), remoteEndpoint.port()), connectSession.get()));
+
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK. remoteEndpoint address:" << remoteEndpoint.address().to_v4().to_string() << "\n";
+#endif
 
 	connectSession->initialize();
 	connectCallback(true);
 }
 
 
-PendingResultPtr IOConnector::dispatchMessage(const MessageHeaderPtr message)
+PendingResultPtr PyMT4::IOConnector::dispatchMessage(const MessageHeaderPtr message)
 {
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
 
 	boost::mutex::scoped_lock connectorLock(_connectorMutex);
 	

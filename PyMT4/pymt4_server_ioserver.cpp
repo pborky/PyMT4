@@ -29,7 +29,7 @@ namespace PyMT4
  *
  */
 
-IOServerPtr IOServer::m_instance;
+IOServerPtr PyMT4::IOServer::m_instance;
 
 
 /* ///////////////////////////// *
@@ -38,14 +38,14 @@ IOServerPtr IOServer::m_instance;
  *
  */
 
-int32_t IOServer::WindowUpdateMsg = RegisterWindowMessage(L"MetaTrader4_Internal_Message");
+int32_t PyMT4::IOServer::WindowUpdateMsg = RegisterWindowMessage(L"MetaTrader4_Internal_Message");
 
-IOServer::~IOServer()
+PyMT4::IOServer::~IOServer()
 {
 	shutdown();
 }
 
-IOServer::IOServer() :
+PyMT4::IOServer::IOServer() :
 m_iosWork(m_ioService),
 m_acceptor(m_ioService),
 _shutdownRequest(false)
@@ -60,13 +60,13 @@ _shutdownRequest(false)
 }
 
 
-void IOServer::acceptSession()
+void PyMT4::IOServer::acceptSession()
 {
 	IOSessionPtr pendingSession(new IOSession(m_ioService));
-	m_acceptor.async_accept(pendingSession->socket(),bind(&IOServer::acceptHandler,this,pendingSession,asio::placeholders::error));
+	m_acceptor.async_accept(pendingSession->socket(),bind(&PyMT4::IOServer::acceptHandler,this,pendingSession,asio::placeholders::error));
 }
 
-void IOServer::acceptHandler(IOSessionPtr session, const system::error_code& error)
+void PyMT4::IOServer::acceptHandler(IOSessionPtr session, const system::error_code& error)
 {
 	if(!error)
 	{
@@ -78,12 +78,12 @@ void IOServer::acceptHandler(IOSessionPtr session, const system::error_code& err
 }
 
 
-void IOServer::registerChartWindow(const std::string& chartName, HWND chartHandle)
+void PyMT4::IOServer::registerChartWindow(const std::string& chartName, HWND chartHandle)
 {
 	_registeredWindowList[chartName.c_str()] = chartHandle;
 }
 
-void IOServer::chartWindowNotify(const std::string& chartName, HWND chartHandle)
+void PyMT4::IOServer::chartWindowNotify(const std::string& chartName, HWND chartHandle)
 {
 	//BOOST_FOREACH(IOSessionList::value_type sessionData,_sessionList)
 	//{
@@ -95,17 +95,17 @@ void IOServer::chartWindowNotify(const std::string& chartName, HWND chartHandle)
 	//}
 }
 
-void IOServer::requestChartsUpdate()
+void PyMT4::IOServer::requestChartsUpdate()
 {
 	BOOST_FOREACH(ChartWindowList::value_type chartWindowData, _registeredWindowList)
 	{
-		PostMessageA(chartWindowData.second, IOServer::WindowUpdateMsg, 2, 1);
+		PostMessageA(chartWindowData.second, PyMT4::IOServer::WindowUpdateMsg, 2, 1);
 	}
 
 }
 
 
-void IOServer::queueCommand(PendingCommandPtr command)
+void PyMT4::IOServer::queueCommand(PendingCommandPtr command)
 {
 	boost::mutex::scoped_lock scopedlock(_servermutex);
 
@@ -114,7 +114,7 @@ void IOServer::queueCommand(PendingCommandPtr command)
 }
 
 
-int32_t IOServer::pendingCommand()
+int32_t PyMT4::IOServer::pendingCommand()
 {
 	boost::mutex::scoped_lock scopedLock(_servermutex);
 
@@ -136,18 +136,26 @@ int32_t IOServer::pendingCommand()
 
 
 
-const std::string& IOServer::getStringArgument(std::string& stringbuffer)
+const std::string& PyMT4::IOServer::getStringArgument(std::string& stringbuffer)
 {
 	std::string result;
 	Serializer<std::string>::deserializeItem(&result, &_currentCommand->dataPos);
-
 	std::copy(result.begin(), result.end(), std::back_inserter(stringbuffer));
 	stringbuffer[result.size()] = NULL;
+
+	// Todo: Not yet working
+	//char result[1024] = { 0 };
+	//Serializer<char>::deserializeItem(result, &_currentCommand->dataPos);
+	//
+	//std::string resultString = result;
+	//std::copy(resultString.begin(), resultString.end(), std::back_inserter(stringbuffer));
+	//stringbuffer[resultString.size()] = NULL;
+	////ioserver->completeCommand<std::string>(resultString.c_str(), error);
 
 	return stringbuffer;
 }
 
-void IOServer::shutdown()
+void PyMT4::IOServer::shutdown()
 {
 
 	{
@@ -163,17 +171,17 @@ void IOServer::shutdown()
 
 
 	m_iosThread->join();
-	IOServer::m_instance.reset();
+	PyMT4::IOServer::m_instance.reset();
 }
 
-void IOServer::notifyResult(const MessageTypeIdentifier&,const MessageUID& replyToUid)
+void PyMT4::IOServer::notifyResult(const MessageTypeIdentifier&,const MessageUID& replyToUid)
 {
 	boost::mutex::scoped_lock scopedlock(_servermutex);
 	Buffer& buffer = Buffer();
 	_onTickResults[replyToUid]->setResult(buffer.begin(), buffer.end());
 }
 
-bool IOServer::dispatchOnTick(const std::string& symbol, const double& bid, const double& ask)
+bool PyMT4::IOServer::dispatchOnTick(const char *symbol, const double& bid, const double& ask)
 {
 	{
 		boost::mutex::scoped_lock scopedlock(_servermutex);
@@ -186,7 +194,8 @@ bool IOServer::dispatchOnTick(const std::string& symbol, const double& bid, cons
 
 			Buffer& buffer = messageEvent->messageBuffer();
 
-			Serializer<std::string>::serializeItem(const_cast<std::string*>(&symbol),&buffer);
+			std::string resultString = symbol;
+			Serializer<std::string>::serializeItem(const_cast<std::string*>(&resultString), &buffer);
 			Serializer<double>::serializeItem(const_cast<double*>(&bid),&buffer);
 			Serializer<double>::serializeItem(const_cast<double*>(&ask),&buffer);
 
@@ -209,7 +218,7 @@ bool IOServer::dispatchOnTick(const std::string& symbol, const double& bid, cons
 	return true;
 }
 
-IOServerPtr IOServer::Instance()
+IOServerPtr PyMT4::IOServer::Instance()
 {
 	if (!m_instance)
 	{

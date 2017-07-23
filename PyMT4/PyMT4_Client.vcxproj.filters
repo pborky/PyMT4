@@ -24,9 +24,6 @@
     <ClCompile Include="pymt4_client_ioconnector.cpp">
       <Filter>Client\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pymt4_client_main.cpp">
-      <Filter>Client\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pymt4_client_command.cpp">
       <Filter>Client\Source Files</Filter>
     </ClCompile>

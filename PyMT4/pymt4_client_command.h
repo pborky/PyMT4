@@ -87,7 +87,8 @@ namespace PyMT4
 		int32_t		OrderSelect(const int32_t& index, const int32_t& select, const int32_t& pool=MODE_TRADES);
 		int32_t		OrderSend(
 								const std::string& symbol, 
-								const int32_t& cmd, const double& volume, 
+								const int32_t& cmd,
+								const double& volume, 
 								const double& price, 
 								const int32_t& slippage, 
 								const double& stoploss, 
@@ -139,7 +140,7 @@ namespace PyMT4
 		/* Common Functions  http://docs.mql4.com/common */
 		bool Alert(const std::string&);
 		bool Comment(const std::string&);
-		bool Print(const std::string&);
+		bool Print(const char *);
 		bool RefreshRates();
 
 

@@ -164,7 +164,7 @@ namespace PyMT4 {
 		return TRUE;
 	}
 
-	EXPORT(BOOL) pymt4_notifyOnTick(const std::string& symbol,double bid,double ask)
+	EXPORT(BOOL) pymt4_notifyOnTick(const char *symbol, double bid, double ask)
 	{
 		if (isInitialized)
 		{

@@ -80,6 +80,7 @@ bool IOSession::MessageCommandHandler(const MessageTypeIdentifier& messageId,con
 void IOSession::initialize()
 {
 		m_socket.set_option(boost::asio::socket_base::keep_alive(true));
+		//m_socket.set_option(boost::asio::socket_base::enable_connection_aborted(true));
 		m_socket.set_option(boost::asio::ip::tcp::no_delay(true));
 		readHeader();
 }

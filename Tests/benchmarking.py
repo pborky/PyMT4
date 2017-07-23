@@ -14,7 +14,8 @@ if is_connected == True:
     for i in range(REPEATITIVE_LOOP):
         if i % 1000 == 0:
             print ('Printed i = %s' % str(i))
-        Print (str(i))
+        print_result = Print (str(i))
+        assert print_result, 'Unable to perform Printing'
 
     time_delta = printEndDateTime(time_start)
     print ('Performance Index = %.1f commands per second' % (REPEATITIVE_LOOP/time_delta))

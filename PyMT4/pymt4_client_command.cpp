@@ -283,8 +283,11 @@ namespace PyMT4
 		bool Alert(const std::string& alert)
 		{ return DispatchFunction<bool, const std::string>()(CmdId_Alert, alert);}
 
-		bool Print(const std::string& print)
-		{ return DispatchFunction<bool, const std::string>()(CmdId_Print, print);}
+		bool Print(const char *print)
+		{
+			std::string resultString = print;
+			return DispatchFunction<bool, const std::string>()(CmdId_Print, resultString.c_str());
+		}
 
 		bool Comment(const std::string& comment)
 		{ return DispatchFunction<bool, const std::string>()(CmdId_Comment, comment);}

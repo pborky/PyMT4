@@ -80,21 +80,22 @@ bool IOSession::messageEventHandler(const MessageTypeIdentifier& messageId, cons
 	
 	switch(eventType)
 	{
-	case EvtId_OnTick:
-	{
-		std::string symbol;
-		double bid,ask;
-		Serializer<std::string>::deserializeItem(&symbol,&begin);
-		Serializer<double>::deserializeItem(&bid,&begin);
-		Serializer<double>::deserializeItem(&ask,&begin);
+		case EvtId_OnTick:
+		{
+			std::string symbol;
+			double bid,ask;
+			Serializer<std::string>::deserializeItem(&symbol, &begin);
+			Serializer<double>::deserializeItem(&bid, &begin);
+			Serializer<double>::deserializeItem(&ask, &begin);
 
-		_sessionMutex.unlock();
-		IOConnector::Instance()->notifyOnTick(static_pointer_cast<IOSession>(shared_from_this()),messageuid,symbol,bid,ask);
-		_sessionMutex.lock();
-		break;
-	}
-	default:
-		break;
+			_sessionMutex.unlock();
+			IOConnector::Instance()->notifyOnTick(static_pointer_cast<IOSession>(shared_from_this()), messageuid, symbol, bid, ask);
+			_sessionMutex.lock();
+			break;
+		}
+
+		default:
+			break;
 	}
 
 	return true;
@@ -110,6 +111,9 @@ PendingResultPtr IOSession::dispatchMessage(MessageHeaderPtr message)
 	_pendingResultQueue.push_back(pendingResult);
 
 	}
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " writeMessage:" << message << "\n";
+#endif
 	writeMessage(message);
 
 	return pendingResult;
@@ -118,7 +122,12 @@ PendingResultPtr IOSession::dispatchMessage(MessageHeaderPtr message)
 
 void IOSession::initialize()
 {
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> readHeader" << "\n";
+#endif
+
 		m_socket.set_option(boost::asio::socket_base::keep_alive(true));
+		//m_socket.set_option(boost::asio::socket_base::enable_connection_aborted(true));
 		m_socket.set_option(boost::asio::ip::tcp::no_delay(true));
 		readHeader();
 }

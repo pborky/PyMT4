@@ -36,7 +36,7 @@ void onTickHandler(const std::string& symbol,const double& bid,const double& ask
 		{
 			try
 			{
-				boost::python::call<void>(callbackDetail.second.ptr(),symbol,bid,ask);
+				boost::python::call<void>(callbackDetail.second.ptr(), symbol, bid, ask);
 			} catch ( boost::python::error_already_set& ) {
 				PyErr_Print();
 			}
@@ -53,12 +53,19 @@ bool RegisterOnTickHandler(const std::string& symbol,boost::python::object& hand
 {
 
 	if (!PyCallable_Check(handler.ptr()))
+	{
+#ifdef _DEBUG
+		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: !PyCallable_Check" << "\n";
+#endif
 		return false;
+	}
 
 	BOOST_FOREACH(PyOnTickHandlerList::value_type& callbackDetail,pyOnTickHandlerList)
 	{
 		if (callbackDetail.second == handler)
+		{
 			return false;
+		}
 	}
 
 	pyOnTickHandlerList.push_back(make_pair(symbol,handler));
@@ -69,7 +76,12 @@ bool UnregisterOnTickHandler(boost::python::object& handler)
 {
 
 	if (!PyCallable_Check(handler.ptr()))
+	{
+#ifdef _DEBUG
+		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: !PyCallable_Check" << "\n";
+#endif
 		return false;
+	}
 
 	BOOST_FOREACH(PyOnTickHandlerList::value_type& callbackDetail, pyOnTickHandlerList)
 	{
@@ -79,41 +91,68 @@ bool UnregisterOnTickHandler(boost::python::object& handler)
 			return true;
 		}
 	}
+
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: Unexpected return" << "\n";
+#endif
 	return false;
-}
-
-bool Connect()
-{
-	static bool isConnected = false;
-	
-	if (isConnected)
-		return true;
-
-
-	PyMT4::IOConnectorPtr ioConnector = PyMT4::IOConnector::Instance();
-	ioConnector->registerOnTickHandler(boost::bind(&onTickHandler,_1,_2,_3));
-
-	isConnected = ioConnector->connect();
-	return isConnected;
 }
 
 bool Disconnect()
 {
+	bool isDisconnected = false;
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
+
 	PyMT4::IOConnectorPtr ioConnector = PyMT4::IOConnector::Instance();
-	ioConnector->disconnect();
-	return true;
+	isDisconnected = ioConnector->disconnect();
+	return isDisconnected;
+}
+
+bool Connect()
+{
+	bool isConnected = false;
+
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
+	PyMT4::IOConnectorPtr ioConnector = PyMT4::IOConnector::Instance();
+
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> ioConnector->registerOnTickHandler" << "\n";
+#endif
+	ioConnector->registerOnTickHandler(boost::bind(&onTickHandler,_1,_2,_3));
+
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> ioConnector->connect" << "\n";
+#endif
+	isConnected = ioConnector->connect();
+
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> isConnected: " << (isConnected ? "true" : "false") << "\n";
+#endif
+	return isConnected;
 }
 
 
 void exit_module()
 {
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
+
 	Disconnect();
 }
 
 
 void init_module()
 {
-	PyEval_InitThreads();
+#ifdef _DEBUG
+	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
+#endif
+
+	PyEval_InitThreads(); // Creates and locks the GIL
 	int status = Py_AtExit(exit_module);
 }
 

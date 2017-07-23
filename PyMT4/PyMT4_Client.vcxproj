@@ -22,6 +22,7 @@
     <ProjectGuid>{ADD0BC36-DCEB-46D4-A228-D70B9B8770C9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PyMT4_Client</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -75,9 +76,10 @@
     <IntDir>$(SolutionDir)$(Configuration)\</IntDir>
     <TargetExt>.pyd</TargetExt>
     <TargetName>PyMT4</TargetName>
-    <IncludePath>$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath);C:\Python27\x86\include</IncludePath>
+    <LibraryPath>$(LibraryPath);C:\Python27\x86\libs</LibraryPath>
     <SourcePath>$(ProjectDir);$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;</SourcePath>
+    <OutDir>C:\Personal\Installer\Python MT4 Backtest\PyMT4\Release\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.pyd</TargetExt>
@@ -94,7 +96,7 @@
     <IntDir>$(SolutionDir)$(Configuration)\</IntDir>
     <TargetExt>.pyd</TargetExt>
     <TargetName>PyMT4</TargetName>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>C:\Personal\Installer\Python MT4 Backtest\PyMT4\Release\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetExt>.pyd</TargetExt>
@@ -181,7 +183,6 @@
   <ItemGroup>
     <ClCompile Include="pymt4_client_ioconnector.cpp" />
     <ClCompile Include="pymt4_client_iosession.cpp" />
-    <ClCompile Include="pymt4_client_main.cpp" />
     <ClCompile Include="pymt4_client_module.cpp" />
   </ItemGroup>
   <ItemGroup>
