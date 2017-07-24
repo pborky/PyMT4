@@ -4,7 +4,6 @@ pymt4_initialize
 pymt4_uninitialize
 pymt4_isinitialized
 
-pymt4_notify
 pymt4_notifyOnTick
 pymt4_requestPendingCommand
 pymt4_setDoubleResult

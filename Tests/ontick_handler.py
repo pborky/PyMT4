@@ -19,8 +19,8 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 from PyMT4 import *
 from common import *
 
-def OnTickHandler(symbol, bid, ask):
-    print ('Symbol: \'%s\'  Bid: %.5f  Ask: %.5f' % (symbol, bid, ask))
+def OnTickHandler(symbol, bid, ask, counter):
+    print ('%09d:  Symbol: \'%s\'  Bid: %.5f  Ask: %.5f' % (counter, symbol, bid, ask))
 
 if __name__ == "__main__":
     is_connected = Connect()

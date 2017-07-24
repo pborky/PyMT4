@@ -76,7 +76,7 @@ bool IOSession::messageEventHandler(const MessageTypeIdentifier& messageId, cons
 
 	EventIdentifier eventType;
 
-	Serializer<EventIdentifier>::deserializeItem(&eventType,&begin);
+	Serializer<EventIdentifier>::deserializeItem(&eventType, &begin);
 	
 	switch(eventType)
 	{
@@ -84,12 +84,14 @@ bool IOSession::messageEventHandler(const MessageTypeIdentifier& messageId, cons
 		{
 			std::string symbol;
 			double bid,ask;
+			int counter;
 			Serializer<std::string>::deserializeItem(&symbol, &begin);
 			Serializer<double>::deserializeItem(&bid, &begin);
 			Serializer<double>::deserializeItem(&ask, &begin);
+			Serializer<int>::deserializeItem(&counter, &begin);
 
 			_sessionMutex.unlock();
-			IOConnector::Instance()->notifyOnTick(static_pointer_cast<IOSession>(shared_from_this()), messageuid, symbol, bid, ask);
+			IOConnector::Instance()->notifyOnTick(static_pointer_cast<IOSession>(shared_from_this()), messageuid, symbol, bid, ask, counter);
 			_sessionMutex.lock();
 			break;
 		}

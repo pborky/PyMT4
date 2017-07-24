@@ -42,10 +42,10 @@ namespace PyMT4
 	typedef boost::shared_ptr<mutex> SMutex;
 	typedef boost::shared_ptr<condition_variable> SCondition;
 
-	typedef boost::function<void(const std::string& ,const double&,const double&)> OnTickHandlerFunc;
+	typedef boost::function<void(const std::string& , const double&, const double&, const int&)> OnTickHandlerFunc;
 	typedef boost::uuids::uuid OnTickHandlerId;
 	
-	typedef std::map<OnTickHandlerId,std::pair<bool,OnTickHandlerFunc> > OnTickHandlerList;
+	typedef std::map<OnTickHandlerId,std::pair<bool, OnTickHandlerFunc> > OnTickHandlerList;
 
 	typedef boost::function<void(const bool&)> ConnectCallback;
 
@@ -71,8 +71,8 @@ namespace PyMT4
 		PendingResultPtr dispatchMessage(const MessageHeaderPtr message);
 
 		OnTickHandlerId registerOnTickHandler(const OnTickHandlerFunc& func);
-		void		    onTickDispatcher(const OnTickHandlerFunc& handlerFunc,IOSessionPtr session,const MessageUID& messageuid,const OnTickHandlerId& id,const std::string& symbol, const double& bid, const double& ask);
-		void		    notifyOnTick(IOSessionPtr session,const MessageUID& messageuid,const std::string& symbol, const double& bid, const double& ask);
+		void		    onTickDispatcher(const OnTickHandlerFunc& handlerFunc, IOSessionPtr session,const MessageUID& messageuid, const OnTickHandlerId& id,const std::string& symbol, const double& bid, const double& ask, const int& counter);
+		void		    notifyOnTick(IOSessionPtr session,const MessageUID& messageuid,const std::string& symbol, const double& bid, const double& ask, const int& counter);
 			
 
 		~IOConnector();

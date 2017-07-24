@@ -22,21 +22,21 @@
 using namespace boost::python;
 
 
-typedef std::list<std::pair<std::string,boost::python::object>> PyOnTickHandlerList;
+typedef std::list<std::pair<std::string, boost::python::object>> PyOnTickHandlerList;
 
 PyOnTickHandlerList pyOnTickHandlerList;
 
-void onTickHandler(const std::string& symbol,const double& bid,const double& ask)
+void onTickHandler(const std::string& symbol, const double& bid, const double& ask, const int& counter)
 {
 
 	PyGILState_STATE gilState = PyGILState_Ensure();
-	BOOST_FOREACH(PyOnTickHandlerList::value_type& callbackDetail,pyOnTickHandlerList)
+	BOOST_FOREACH(PyOnTickHandlerList::value_type& callbackDetail, pyOnTickHandlerList)
 	{
 		if ( (!callbackDetail.first.compare("*")) || !callbackDetail.first.compare(symbol) )
 		{
 			try
 			{
-				boost::python::call<void>(callbackDetail.second.ptr(), symbol, bid, ask);
+				boost::python::call<void>(callbackDetail.second.ptr(), symbol, bid, ask, counter);
 			} catch ( boost::python::error_already_set& ) {
 				PyErr_Print();
 			}
@@ -49,7 +49,7 @@ void onTickHandler(const std::string& symbol,const double& bid,const double& ask
 
 
 
-bool RegisterOnTickHandler(const std::string& symbol,boost::python::object& handler)
+bool RegisterOnTickHandler(const std::string& symbol, boost::python::object& handler)
 {
 
 	if (!PyCallable_Check(handler.ptr()))
@@ -60,7 +60,7 @@ bool RegisterOnTickHandler(const std::string& symbol,boost::python::object& hand
 		return false;
 	}
 
-	BOOST_FOREACH(PyOnTickHandlerList::value_type& callbackDetail,pyOnTickHandlerList)
+	BOOST_FOREACH(PyOnTickHandlerList::value_type& callbackDetail, pyOnTickHandlerList)
 	{
 		if (callbackDetail.second == handler)
 		{
@@ -68,7 +68,7 @@ bool RegisterOnTickHandler(const std::string& symbol,boost::python::object& hand
 		}
 	}
 
-	pyOnTickHandlerList.push_back(make_pair(symbol,handler));
+	pyOnTickHandlerList.push_back(make_pair(symbol, handler));
 	return true;
 }
 
@@ -122,7 +122,7 @@ bool Connect()
 #ifdef _DEBUG
 	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> ioConnector->registerOnTickHandler" << "\n";
 #endif
-	ioConnector->registerOnTickHandler(boost::bind(&onTickHandler,_1,_2,_3));
+	ioConnector->registerOnTickHandler(boost::bind(&onTickHandler, _1, _2, _3, _4));
 
 #ifdef _DEBUG
 	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> ioConnector->connect" << "\n";

@@ -88,18 +88,6 @@ namespace PyMT4 {
 		return TRUE;
 	}
 
-
-	EXPORT(BOOL) pymt4_notify(const std::string& windowName, int32_t updateWindowHandle)
-	{
-		boost::mutex::scoped_lock pymt4_lock(pymt4_mutex);
-		if (isInitialized)
-		{
-			IOServerPtr ioserver = IOServer::Instance();
-			ioserver->chartWindowNotify(windowName, (HWND)updateWindowHandle);
-		}
-		return TRUE;
-	}
-
 	EXPORT(double) pymt4_getDoubleArgument()
 	{
 
@@ -164,13 +152,13 @@ namespace PyMT4 {
 		return TRUE;
 	}
 
-	EXPORT(BOOL) pymt4_notifyOnTick(const char *symbol, double bid, double ask)
+	EXPORT(BOOL) pymt4_notifyOnTick(const char *symbol, double bid, double ask, int counter)
 	{
 		if (isInitialized)
 		{
 			boost::mutex::scoped_lock pymt4_lock(pymt4_mutex);
 			IOServerPtr ioserver = IOServer::Instance();
-			ioserver->dispatchOnTick(symbol, bid, ask);
+			ioserver->dispatchOnTick(symbol, bid, ask, counter);
 			return TRUE;
 		}
 		return FALSE;

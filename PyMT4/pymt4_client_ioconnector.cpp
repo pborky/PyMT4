@@ -176,15 +176,17 @@ OnTickHandlerId PyMT4::IOConnector::registerOnTickHandler(const OnTickHandlerFun
 };
 
 
-void PyMT4::IOConnector::onTickDispatcher(const OnTickHandlerFunc& handlerFunc,IOSessionPtr session,const MessageUID& messageuid,const OnTickHandlerId& id,const std::string& symbol, const double& bid, const double& ask)
+void PyMT4::IOConnector::onTickDispatcher(const OnTickHandlerFunc& handlerFunc, IOSessionPtr session, const MessageUID& messageuid,
+											const OnTickHandlerId& id,const std::string& symbol, const double& bid, const double& ask,
+											const int& counter)
 {
 #ifdef _DEBUG
 	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
 #endif
 
-	handlerFunc(symbol, bid, ask);
+	handlerFunc(symbol, bid, ask, counter);
 
-	MessageResultPtr result = MessageResult::Create(MessageEventType,messageuid);
+	MessageResultPtr result = MessageResult::Create(MessageEventType, messageuid);
 
 	boost::mutex::scoped_lock connectorLock(_connectorMutex);
 
@@ -199,19 +201,19 @@ void PyMT4::IOConnector::onTickDispatcher(const OnTickHandlerFunc& handlerFunc,I
 
 
 
-void PyMT4::IOConnector::notifyOnTick(IOSessionPtr session,const MessageUID& messageuid, const std::string& symbol, const double& bid, const double& ask)
+void PyMT4::IOConnector::notifyOnTick(IOSessionPtr session,const MessageUID& messageuid, const std::string& symbol, const double& bid, const double& ask, const int& counter)
 {
 #ifdef _DEBUG
 	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
 #endif
 
-	BOOST_FOREACH(OnTickHandlerList::value_type& tickHandlerDetail,_onTickHandlerList)
+	BOOST_FOREACH(OnTickHandlerList::value_type& tickHandlerDetail, _onTickHandlerList)
 	{
 		boost::mutex::scoped_lock connectorLock(_connectorMutex);
 		if (!tickHandlerDetail.second.first)
 		{	
 			tickHandlerDetail.second.first = true;
-			_poolIOService.post(boost::bind(&PyMT4::IOConnector::onTickDispatcher,shared_from_this(),tickHandlerDetail.second.second,session,messageuid,tickHandlerDetail.first,symbol,bid,ask));
+			_poolIOService.post(boost::bind(&PyMT4::IOConnector::onTickDispatcher, shared_from_this(), tickHandlerDetail.second.second, session,messageuid, tickHandlerDetail.first, symbol, bid, ask, counter));
 		}
 	}
 

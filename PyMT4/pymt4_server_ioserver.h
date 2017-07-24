@@ -92,11 +92,10 @@ namespace PyMT4
 		static IOServerPtr		Instance(); 
 
 		void registerChartWindow(const std::string& chartName, HWND chartHandle);
-		void chartWindowNotify(const std::string& chartName,HWND chartHandle);
 		void requestChartsUpdate();
 		int32_t  requestPendingCommand();
 
-		bool dispatchOnTick(const char *symbol, const double& bid, const double& ask);
+		bool dispatchOnTick(const char *symbol, const double& bid, const double& ask, const int& counter);
 		void notifyResult(const MessageTypeIdentifier&,const MessageUID& replyToUid);
 
 		template <typename T> T getPodArgument()

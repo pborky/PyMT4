@@ -157,7 +157,7 @@ enum CmdIdType
     bool pymt4_uninitialize(uchar &windowName[DLL_READ_BUFFER_SIZE], int windowHandle);
     bool pymt4_isinitialized();
     bool pymt4_notify(uchar &windowName[DLL_READ_BUFFER_SIZE], int windowHandle);
-    bool pymt4_notifyOnTick(uchar &symbol[DLL_READ_BUFFER_SIZE], double bid, double ask);
+    bool pymt4_notifyOnTick(uchar &symbol[DLL_READ_BUFFER_SIZE], double bid, double ask, int counter);
     int  pymt4_requestPendingCommand();
 
     int    pymt4_getStringArgument(uchar &[DLL_READ_BUFFER_SIZE]);
@@ -756,6 +756,7 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_MarketInfo:
         {
+            Print("CmdId_MarketInfo");
             //--- Load string into uchar Buffer
             int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
             string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);

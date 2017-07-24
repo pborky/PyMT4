@@ -83,18 +83,6 @@ void PyMT4::IOServer::registerChartWindow(const std::string& chartName, HWND cha
 	_registeredWindowList[chartName.c_str()] = chartHandle;
 }
 
-void PyMT4::IOServer::chartWindowNotify(const std::string& chartName, HWND chartHandle)
-{
-	//BOOST_FOREACH(IOSessionList::value_type sessionData,_sessionList)
-	//{
-	//	//CommandIdentifier commandId = sessionData.second->pendingCommand();
-	//	//if ( commandId == CommandUnknown)
-	//	//	continue;
-
-	//	//_pendingCommandList.push_back(make_pair(sessionData.first,commandId));
-	//}
-}
-
 void PyMT4::IOServer::requestChartsUpdate()
 {
 	BOOST_FOREACH(ChartWindowList::value_type chartWindowData, _registeredWindowList)
@@ -181,7 +169,7 @@ void PyMT4::IOServer::notifyResult(const MessageTypeIdentifier&,const MessageUID
 	_onTickResults[replyToUid]->setResult(buffer.begin(), buffer.end());
 }
 
-bool PyMT4::IOServer::dispatchOnTick(const char *symbol, const double& bid, const double& ask)
+bool PyMT4::IOServer::dispatchOnTick(const char *symbol, const double& bid, const double& ask, const int& counter)
 {
 	{
 		boost::mutex::scoped_lock scopedlock(_servermutex);
@@ -196,8 +184,9 @@ bool PyMT4::IOServer::dispatchOnTick(const char *symbol, const double& bid, cons
 
 			std::string resultString = symbol;
 			Serializer<std::string>::serializeItem(const_cast<std::string*>(&resultString), &buffer);
-			Serializer<double>::serializeItem(const_cast<double*>(&bid),&buffer);
-			Serializer<double>::serializeItem(const_cast<double*>(&ask),&buffer);
+			Serializer<double>::serializeItem(const_cast<double*>(&bid), &buffer);
+			Serializer<double>::serializeItem(const_cast<double*>(&ask), &buffer);
+			Serializer<int>::serializeItem(const_cast<int*>(&counter), &buffer);
 
 
 			IOSession* session = sessionData.second;

@@ -31,9 +31,11 @@
     bool pymt4_uninitialize(uchar &windowName[DLL_READ_BUFFER_SIZE], int windowHandle);
     bool pymt4_isinitialized();
     bool pymt4_notify(uchar &windowName[DLL_READ_BUFFER_SIZE], int windowHandle);
-    bool pymt4_notifyOnTick(uchar &symbol[DLL_READ_BUFFER_SIZE], double bid, double ask);
+    bool pymt4_notifyOnTick(uchar &symbol[DLL_READ_BUFFER_SIZE], double bid, double ask, int counter);
     int  pymt4_requestPendingCommand();
 #import
+
+int counter = 0;
 
 int init()
 {
@@ -66,11 +68,37 @@ int start()
 {
     if (pymt4_isinitialized())
     {
-        //--- Convert the strings to uchar[] arrays
-        uchar ucResult[DLL_READ_BUFFER_SIZE];
-        ArrayInitialize(ucResult, 0);
-        int symbol_size = StringToCharArray(Symbol(), ucResult);
-        pymt4_notifyOnTick(ucResult, Bid, Ask);
+        Print ("PyMT4 Host Started ...");
+        bool is_continue = True;
+        double previous_bid = 0.0;
+        double previous_ask = 0.0;
+        while (is_continue)
+        {
+            RefreshRates();
+            if ((previous_bid != Bid) || (previous_ask != Ask))
+            {
+                //--- Convert the strings to uchar[] arrays
+                uchar ucResult[DLL_READ_BUFFER_SIZE];
+                ArrayInitialize(ucResult, 0);
+                int symbol_size = StringToCharArray(Symbol(), ucResult);
+                pymt4_notifyOnTick(ucResult, Bid, Ask, counter);
+                counter += 1;
+
+                //--- Update the comparator value
+                previous_bid = Bid;
+                previous_ask = Ask;
+            }
+
+            if (IsStopped())
+            {
+                break;
+            }
+
+            //--- Delay to allow user to press cancel.
+            //--- Uncomment this delay if you are debugging or else it will affect performance especially
+            //--- during benchmarking run.
+            Sleep(50);
+        }
     }
     return(0);
 }
