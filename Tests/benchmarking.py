@@ -1,5 +1,4 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 REPEATITIVE_LOOP = 10000
                         
@@ -18,7 +17,8 @@ if is_connected == True:
         assert print_result, 'Unable to perform Printing'
 
     time_delta = printEndDateTime(time_start)
-    print ('Performance Index = %.1f commands per second' % (REPEATITIVE_LOOP/time_delta))
+    if time_delta > 0:
+        print ('Performance Index = %.1f commands per second' % (REPEATITIVE_LOOP/time_delta))
     Disconnect()
     print ('Disconnected')
 else:

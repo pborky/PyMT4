@@ -43,7 +43,7 @@ namespace PyMT4
 		std::string AccountCurrency();
 		double		AccountEquity();
 		double		AccountFreeMargin();
-		double		AccountFreeMarginCheck(const std::string& symbol, const int32_t& cmd, const double& volume);
+		double		AccountFreeMarginCheck(const char *symbol, const int32_t& cmd, const double& volume);
 		double		AccountFreeMarginMode();
 		int32_t		AccountLeverage();
 		double		AccountMargin();
@@ -56,16 +56,16 @@ namespace PyMT4
 
 
 		/* Timeseries Access http://docs.mql4.com/series */
-		int32_t		iBars(const std::string& symbol,const int32_t& timeframe);
-		int32_t		iBarShift(const std::string& symbol,const Datetime& datetime,const bool& exact=false);
-		double		iClose(const std::string& symbol,const int32_t& timeframe, const int32_t& shift);
-		double		iHigh(const std::string& symbol, const int32_t& timeframe, const int32_t& shift);
-		double		iHighest(const std::string& symbol, const int32_t& timeframe,const int32_t& type,const int32_t& count=0,const int32_t& start=0);
-		double		iLow(const std::string& symbol, const int32_t& timeframe,const int32_t& shift);
-		double		iLowest(const std::string& symbol, const int32_t& timeframe,const int32_t& type,const int32_t& count=0,const int32_t& start=0);
-		double		iOpen(const std::string& symbol, const int32_t& timeframe,const int32_t& shift);
-		Datetime    iTime(const std::string& symbol, const int32_t& timeframe, const int32_t& shift);
-		double		iVolume(const std::string& symbol, const int32_t& timeframe, const int32_t& shift);
+		int32_t		iBars(const char *symbol,const int32_t& timeframe);
+		int32_t		iBarShift(const char *symbol,const Datetime& datetime,const bool& exact=false);
+		double		iClose(const char *symbol,const int32_t& timeframe, const int32_t& shift);
+		double		iHigh(const char *symbol, const int32_t& timeframe, const int32_t& shift);
+		double		iHighest(const char *symbol, const int32_t& timeframe,const int32_t& type,const int32_t& count=0,const int32_t& start=0);
+		double		iLow(const char *symbol, const int32_t& timeframe,const int32_t& shift);
+		double		iLowest(const char *symbol, const int32_t& timeframe,const int32_t& type,const int32_t& count=0,const int32_t& start=0);
+		double		iOpen(const char *symbol, const int32_t& timeframe,const int32_t& shift);
+		Datetime    iTime(const char *symbol, const int32_t& timeframe, const int32_t& shift);
+		double		iVolume(const char *symbol, const int32_t& timeframe, const int32_t& shift);
 
 
 		/*  Trading functions http://docs.mql4.com/trading */
@@ -86,14 +86,14 @@ namespace PyMT4
 		double		OrderProfit(const int32_t& ticket);			/* OrderSelect() */
 		int32_t		OrderSelect(const int32_t& index, const int32_t& select, const int32_t& pool=MODE_TRADES);
 		int32_t		OrderSend(
-								const std::string& symbol, 
+								const char *symbol, 
 								const int32_t& cmd,
 								const double& volume, 
 								const double& price, 
 								const int32_t& slippage, 
 								const double& stoploss, 
 								const double& takeprofit, 
-								const std::string& comment = "",
+								const char *comment = "",
 								const int32_t& magic=0,
 								const Datetime& expiration=DATETIME_DEFAULT,
 								const Color& arrow_color=CLR_NONE
@@ -138,28 +138,30 @@ namespace PyMT4
 
 
 		/* Common Functions  http://docs.mql4.com/common */
-		bool Alert(const std::string&);
-		bool Comment(const std::string&);
+		bool Alert(const char *);
+		bool Comment(const char *);
 		bool Print(const char *);
-		bool RefreshRates();
+		bool RefreshRates(void);
+		bool ExpertRemove(void);
+		bool TerminalClose(const int& ret_code);
 
 
 		int32_t GetTickCount();
-		double MarketInfo(const std::string& symbol, const int& type);
-		bool PlaySound(const std::string& filename);
-		bool SendFTP(const std::string& filename, const std::string& ftp_path);
-		bool SendMail(const std::string& subject, const std::string& text);
-		bool SendNotification(const std::string& message); 
+		double MarketInfo(const char *symbol, const int& type);
+		bool PlaySound(const char *filename);
+		bool SendFTP(const char *filename, const char *ftp_path);
+		bool SendMail(const char *subject, const char *text);
+		bool SendNotification(const char *message); 
 		std::string Symbol(void);
 		int32_t Period(void);
 
 		/* Technical Indicators https://docs.mql4.com/indicators */
-		double iAC(const std::string& symbol, const int& timeframe, const int& shift);
-		double iAD(const std::string& symbol, const int& timeframe, const int& shift);
-		double iADX(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& mode, const int& shift);
+		double iAC(const char *symbol, const int& timeframe, const int& shift);
+		double iAD(const char *symbol, const int& timeframe, const int& shift);
+		double iADX(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& mode, const int& shift);
 		double iAlligator
 		(
-			const std::string& symbol,
+			const char *symbol,
 			const int& timeframe,
 			const int& jaw_period,
 			const int& jaw_shift,
@@ -172,18 +174,18 @@ namespace PyMT4
 			const int& mode,
 			const int& shift
 		);
-		double iAO(const std::string& symbol, const int& timeframe, const int& shift);
-		double iATR(const std::string& symbol, const int& timeframe, const int& period, const int& shift);
-		double iBearsPower(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
-		double iBands(const std::string& symbol, const int& timeframe, const int& period, const double& deviation, const int& bands_shift, const int& applied_price, const int& mode, const int& shift);
-		double iCCI(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
-		double iDeMarker(const std::string& symbol, const int& timeframe, const int& period, const int& shift);
-		double iEnvelopes(const std::string& symbol, const int& timeframe, const int& ma_period, const int& ma_method, const int& ma_shift, const int& applied_price, const double& deviation, const int& mode, const int& shift);
-		double iForce(const std::string& symbol, const int& timeframe, const int& period, const int& ma_method, const int& applied_price, const int& shift);
-		double iFractals(const std::string& symbol, const int& timeframe, const int& mode, const int& shift);
+		double iAO(const char *symbol, const int& timeframe, const int& shift);
+		double iATR(const char *symbol, const int& timeframe, const int& period, const int& shift);
+		double iBearsPower(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
+		double iBands(const char *symbol, const int& timeframe, const int& period, const double& deviation, const int& bands_shift, const int& applied_price, const int& mode, const int& shift);
+		double iCCI(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
+		double iDeMarker(const char *symbol, const int& timeframe, const int& period, const int& shift);
+		double iEnvelopes(const char *symbol, const int& timeframe, const int& ma_period, const int& ma_method, const int& ma_shift, const int& applied_price, const double& deviation, const int& mode, const int& shift);
+		double iForce(const char *symbol, const int& timeframe, const int& period, const int& ma_method, const int& applied_price, const int& shift);
+		double iFractals(const char *symbol, const int& timeframe, const int& mode, const int& shift);
 		double iGator
 		(
-			const std::string& symbol,
+			const char *symbol,
 			const int& timeframe,
 			const int& jaw_period,
 			const int& jaw_shift,
@@ -196,20 +198,20 @@ namespace PyMT4
 			const int& mode,
 			const int& shift
 		);
-		double iIchimoku(const std::string& symbol, const int& timeframe, const int& tenkan_sen, const int& kijun_sen, const int& senkou_span_b, const int& mode, const int& shift);
-		double iBWMFI(const std::string& symbol, const int& timeframe, const int& shift);
-		double iMomentum(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
-		double iMFI(const std::string& symbol, const int& timeframe, const int& period, const int& shift);
-		double iMA(const std::string& symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift);
-		double iOsMA(const std::string& symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& shift);
-		double iMACD(const std::string& symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& mode, const int& shift);
-		double iOBV(const std::string& symbol, const int& timeframe, const int& applied_price, const int& shift);
-		double iRSI(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
-		double iRVI(const std::string& symbol, const int& timeframe, const int& mode, const int& shift);
-		double iSAR(const std::string& symbol, const int& timeframe, const double& sar_step, const double& maximum, const int& shift);
-		double iStdDev(const std::string& symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift);
-		double iStochastic(const std::string& symbol, const int& timeframe, const int& Kperiod, const int& Dperiod, const int& slowing, const int& method, const int& price_field, const int& mode, const int& shift);
-		double iWPR(const std::string& symbol, const int& timeframe, const int& period, const int& shift);
+		double iIchimoku(const char *symbol, const int& timeframe, const int& tenkan_sen, const int& kijun_sen, const int& senkou_span_b, const int& mode, const int& shift);
+		double iBWMFI(const char *symbol, const int& timeframe, const int& shift);
+		double iMomentum(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
+		double iMFI(const char *symbol, const int& timeframe, const int& period, const int& shift);
+		double iMA(const char *symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift);
+		double iOsMA(const char *symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& shift);
+		double iMACD(const char *symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& mode, const int& shift);
+		double iOBV(const char *symbol, const int& timeframe, const int& applied_price, const int& shift);
+		double iRSI(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift);
+		double iRVI(const char *symbol, const int& timeframe, const int& mode, const int& shift);
+		double iSAR(const char *symbol, const int& timeframe, const double& sar_step, const double& maximum, const int& shift);
+		double iStdDev(const char *symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift);
+		double iStochastic(const char *symbol, const int& timeframe, const int& Kperiod, const int& Dperiod, const int& slowing, const int& method, const int& price_field, const int& mode, const int& shift);
+		double iWPR(const char *symbol, const int& timeframe, const int& period, const int& shift);
 
 		/* Flow Control */
 		bool Set_Flow_Return_Value(const bool& flow_return_value);

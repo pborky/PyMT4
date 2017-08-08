@@ -29,10 +29,6 @@
 #ifdef _DEBUG
 #include <stdio.h>
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
 
 struct DebugConsole {
 	DebugConsole() {
@@ -57,6 +53,9 @@ namespace PyMT4 {
 
 	EXPORT(BOOL) pymt4_initialize(const std::string& windowName, int32_t updateWindowHandle)
 	{
+#ifdef _DEBUG
+		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> Instance() -> registerChartWindow()" << std::endl;
+#endif
 		boost::mutex::scoped_lock pymt4_lock(pymt4_mutex);
 
 		if (isInitialized)
@@ -79,6 +78,9 @@ namespace PyMT4 {
 
 	EXPORT(bool) pymt4_uninitialize(const std::string& windowName, int32_t updateWindowHandle)
 	{
+#ifdef _DEBUG
+		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> Instance() -> shutdown()" << std::endl;
+#endif
 		boost::mutex::scoped_lock pymt4_lock(pymt4_mutex);
 		IOServerPtr ioserver = IOServer::Instance();
 		ioserver->shutdown();
@@ -106,6 +108,15 @@ namespace PyMT4 {
 		IOServerPtr ioserver = IOServer::Instance();
 		string = ioserver->getStringArgument(string);
 		int string_length = string.size();
+//#ifdef _DEBUG
+//		size_t DebugFillThreshold = _CrtSetDebugFillThreshold(0);
+//		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK. DebugFillThreshold: " << DebugFillThreshold << std::endl;
+//		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK. string:\'" << string.c_str() << "\', length: " << string_length << std::endl;
+//		for (int i = 0; i < string_length; ++i)
+//		{
+//			std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " string[" << i << "] = " << string[i] << std::endl;
+//		}
+//#endif
 		return string_length;
 	}
 
@@ -162,6 +173,6 @@ namespace PyMT4 {
 			return TRUE;
 		}
 		return FALSE;
-	}	
+	}
 }
 

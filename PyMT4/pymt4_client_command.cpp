@@ -45,8 +45,8 @@ namespace PyMT4
 		double AccountFreeMargin()
 		{return DispatchFunction<double>()(PyMT4::CmdId_AccountFreeMargin);}
 
-		double AccountFreeMarginCheck(const std::string& symbol,const int32_t& cmd,const double& volume)
-		{return DispatchFunction<double,const std::string& ,const int32_t& ,const double&>()(PyMT4::CmdId_AccountFreeMarginCheck,symbol,cmd,volume); }
+		double AccountFreeMarginCheck(const char *symbol,const int32_t& cmd,const double& volume)
+		{return DispatchFunction<double,const char *,const int32_t& ,const double&>()(PyMT4::CmdId_AccountFreeMarginCheck,symbol,cmd,volume); }
 
 		double AccountFreeMarginMode()
 		{return DispatchFunction<double>()(PyMT4::CmdId_AccountFreeMarginMode);}
@@ -78,34 +78,34 @@ namespace PyMT4
 
 		/*Timeseries http://docs.mql4.com/series */
 
-		int32_t iBars(const std::string& symbol,const int32_t& timeframe)
+		int32_t iBars(const char *symbol,const int32_t& timeframe)
 		{return DispatchFunction<int32_t,const std::string&,const int32_t&>()(PyMT4::CmdId_iBars,symbol,timeframe);}
 
-		int32_t		iBarShift(const std::string& symbol,const Datetime& datetime,const bool& exact)
+		int32_t		iBarShift(const char *symbol,const Datetime& datetime,const bool& exact)
 		{return DispatchFunction<int32_t,const std::string,const Datetime,const bool>()(CmdId_iBarShift,symbol,datetime,(BOOL)exact);}
 
-		double		iClose(const std::string& symbol,const int32_t& timeframe, const int32_t& shift)
+		double		iClose(const char *symbol,const int32_t& timeframe, const int32_t& shift)
 		{return DispatchFunction<double,const std::string,const int32_t,const int32_t>()(CmdId_iClose,symbol,timeframe,shift);}
 
-		double		iHigh(const std::string& symbol, const int32_t& timeframe, const int32_t& shift)
+		double		iHigh(const char *symbol, const int32_t& timeframe, const int32_t& shift)
 		{return DispatchFunction<double,const std::string,const int32_t,const int32_t>()(CmdId_iHigh,symbol,timeframe,shift);}
 
-		double		iHighest(const std::string& symbol, const int32_t& timeframe,const int32_t& type,const int32_t& count,const int32_t& start)
+		double		iHighest(const char *symbol, const int32_t& timeframe,const int32_t& type,const int32_t& count,const int32_t& start)
 		{return DispatchFunction<double,const std::string,const int32_t,const int32_t,const int32_t,const int32_t>()(CmdId_iHighest,symbol,timeframe,type,count,start);}
 
-		double		iLow(const std::string& symbol, const int32_t& timeframe,const int32_t& shift)
+		double		iLow(const char *symbol, const int32_t& timeframe,const int32_t& shift)
 		{return DispatchFunction<double,const std::string,const int32_t,const int32_t,const int32_t,const int32_t>()(CmdId_iLow,symbol,timeframe,shift);}
 
-		double		iLowest(const std::string& symbol, const int32_t& timeframe,const int32_t& type,const int32_t& count,const int32_t& start)
+		double		iLowest(const char *symbol, const int32_t& timeframe,const int32_t& type,const int32_t& count,const int32_t& start)
 		{return DispatchFunction<double,const std::string,const int32_t,const int32_t,const int32_t,const int32_t>()(CmdId_iLowest,symbol,timeframe,type,count,start);}
 
-		double		iOpen(const std::string& symbol, const int32_t& timeframe,const int32_t& shift)
+		double		iOpen(const char *symbol, const int32_t& timeframe,const int32_t& shift)
 		{return DispatchFunction<double,const std::string,const int32_t,const int32_t,const int32_t,const int32_t>()(CmdId_iOpen,symbol,timeframe,shift);}
 
-		Datetime    iTime(const std::string& symbol, const int32_t& timeframe, const int32_t& shift)
+		Datetime    iTime(const char *symbol, const int32_t& timeframe, const int32_t& shift)
 		{return DispatchFunction<Datetime,const std::string,const int32_t,const int32_t,const int32_t,const int32_t>()(CmdId_iTime,symbol,timeframe,shift);}
 
-		double		iVolume(const std::string& symbol, const int32_t& timeframe, const int32_t& shift)
+		double		iVolume(const char *symbol, const int32_t& timeframe, const int32_t& shift)
 		{return DispatchFunction<double,const std::string,const int32_t,const int32_t,const int32_t,const int32_t>()(CmdId_iVolume,symbol,timeframe,shift);}
 
 
@@ -161,14 +161,14 @@ namespace PyMT4
 		{return DispatchFunction<int32_t,const int32_t,const int32_t,const int32_t>()(CmdId_OrderSelect,index,select,pool);}
 
 		int32_t		OrderSend(
-								const std::string& symbol, 
+								const char *symbol, 
 								const int32_t& cmd, 
 								const double& volume, 
 								const double& price, 
 								const int32_t& slippage, 
 								const double& stoploss, 
 								const double& takeprofit, 
-								const std::string& comment,
+								const char *comment,
 								const int32_t& magic,
 								const Datetime& expiration,
 								const Color& arrow_color
@@ -279,37 +279,73 @@ namespace PyMT4
 		/* Common Functions */
 		bool RefreshRates()
 		{return DispatchFunction<bool>()(CmdId_RefreshRates);}
+		
+		bool ExpertRemove()
+		{
+			return DispatchFunction<bool>()(CmdId_ExpertRemove);
+		}
 
-		bool Alert(const std::string& alert)
-		{ return DispatchFunction<bool, const std::string>()(CmdId_Alert, alert);}
+		bool TerminalClose(const int & ret_code)
+		{
+			return DispatchFunction<bool, const int>()(CmdId_TerminalClose, ret_code);
+		}
+
+		bool Alert(const char *alert)
+		{
+			std::string resultString = alert;
+			return DispatchFunction<bool, const std::string>()(CmdId_Alert, resultString.c_str());
+		}
 
 		bool Print(const char *print)
 		{
 			std::string resultString = print;
+//#ifdef _DEBUG
+//			std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> CmdId_Print, print:\'" << print << "\'" << ", resultString:\'" << resultString.c_str() << "\'" << std::endl;
+//#endif
 			return DispatchFunction<bool, const std::string>()(CmdId_Print, resultString.c_str());
 		}
 
-		bool Comment(const std::string& comment)
-		{ return DispatchFunction<bool, const std::string>()(CmdId_Comment, comment);}
+		bool Comment(const char *comment)
+		{
+			std::string resultString = comment;
+			return DispatchFunction<bool, const std::string>()(CmdId_Comment, resultString.c_str());
+		}
 
 		int32_t GetTickCount()
 		{return DispatchFunction<int32_t>()(CmdId_GetTickCount);}
 
 		/* Market Info https://docs.mql4.com/marketinformation */
-		double MarketInfo(const std::string& symbol, const int& type)
-		{return DispatchFunction<double,const std::string, const int>()(CmdId_MarketInfo, symbol, type);}
+		double MarketInfo(const char *symbol, const int& type)
+		{
+			std::string resultString = symbol;
+			return DispatchFunction<double,const std::string, const int>()(CmdId_MarketInfo, resultString.c_str(), type);
+		}
 
-		bool PlaySound(const std::string& filename)
-		{return DispatchFunction<bool,const std::string>()(CmdId_PlaySound, filename);}
+		bool PlaySound(const char *filename)
+		{
+			std::string resultString = filename;
+			return DispatchFunction<bool,const std::string>()(CmdId_PlaySound, resultString.c_str());
+		}
 
-		bool SendFTP(const std::string& filename, const std::string& ftp_path)
-		{return DispatchFunction<bool, const std::string, const std::string>()(CmdId_SendFTP, filename, ftp_path);}
+		bool SendFTP(const char *filename, const char *ftp_path)
+		{
+			std::string resultString1 = filename; 
+			std::string resultString2 = ftp_path;
+			return DispatchFunction<bool, const std::string, const std::string>()(CmdId_SendFTP, resultString1.c_str(), resultString2.c_str());
+		}
 
-		bool SendMail(const std::string& subject, const std::string& text)
-		{return DispatchFunction<bool, const std::string, const std::string>()(CmdId_SendMail, subject, text);}
+		bool SendMail(const char *subject, const char *text)
+		{
+			std::string resultString1 = subject;
+			std::string resultString2 = text;
+			return DispatchFunction<bool, const std::string, const std::string>()(CmdId_SendMail, resultString1.c_str(), resultString2.c_str());
+		}
 
-		bool SendNotification(const std::string& message)
-		{return DispatchFunction<bool, const std::string>()(CmdId_SendNotification, message);}
+		bool SendNotification(const char *message)
+		{
+			std::string resultString = message;
+			return DispatchFunction<bool, const std::string>()(CmdId_SendNotification, resultString.c_str());
+		}
 
 		std::string Symbol(void)
 		{
@@ -322,24 +358,27 @@ namespace PyMT4
 		}
 
 		/* Technical Indicators https://docs.mql4.com/indicators */
-		double iAC(const std::string& symbol, const int& timeframe, const int& shift)
+		double iAC(const char *symbol, const int& timeframe, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int>()(CmdId_iAC, symbol, timeframe, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int>()(CmdId_iAC, resultString.c_str(), timeframe, shift);
 		}
 
-		double iAD(const std::string& symbol, const int& timeframe, const int& shift)
+		double iAD(const char *symbol, const int& timeframe, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int>()(CmdId_iAD, symbol, timeframe, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int>()(CmdId_iAD, resultString.c_str(), timeframe, shift);
 		}
 
-		double iADX(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& mode, const int& shift)
+		double iADX(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& mode, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int>()(CmdId_iADX, symbol, timeframe, period, applied_price, mode, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int>()(CmdId_iADX, resultString.c_str(), timeframe, period, applied_price, mode, shift);
 		}
 
 		double iAlligator
 		(
-			const std::string& symbol,
+			const char *symbol,
 			const int& timeframe,
 			const int& jaw_period,
 			const int& jaw_shift,
@@ -353,6 +392,7 @@ namespace PyMT4
 			const int& shift
 		)
 		{
+			std::string resultString = symbol;
 			return DispatchFunction<double,
 									const std::string,
 									const int,
@@ -367,7 +407,7 @@ namespace PyMT4
 									const int,
 									const int>()
 				(CmdId_iAlligator,
-					symbol,
+					resultString.c_str(),
 					timeframe,
 					jaw_period,
 					jaw_shift,
@@ -381,54 +421,63 @@ namespace PyMT4
 					shift);
 		}
 
-		double iAO(const std::string& symbol, const int& timeframe, const int& shift)
+		double iAO(const char *symbol, const int& timeframe, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int>()(CmdId_iAO, symbol, timeframe, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int>()(CmdId_iAO, resultString.c_str(), timeframe, shift);
 		}
 
-		double iATR(const std::string& symbol, const int& timeframe, const int& period, const int& shift)
+		double iATR(const char *symbol, const int& timeframe, const int& period, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iATR, symbol, timeframe, period, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iATR, resultString.c_str(), timeframe, period, shift);
 		}
 
-		double iBearsPower(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift)
+		double iBearsPower(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int>()(CmdId_iBearsPower, symbol, timeframe, period, applied_price, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int>()(CmdId_iBearsPower, resultString.c_str(), timeframe, period, applied_price, shift);
 		}
 
-		double iBands(const std::string& symbol, const int& timeframe, const int& period, const double& deviation, const int& bands_shift, const int& applied_price, const int& mode, const int& shift)
+		double iBands(const char *symbol, const int& timeframe, const int& period, const double& deviation, const int& bands_shift, const int& applied_price, const int& mode, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const double, const int, const int, const int, const int>()(CmdId_iBands, symbol, timeframe, period, deviation, bands_shift, applied_price, mode, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const double, const int, const int, const int, const int>()(CmdId_iBands, resultString.c_str(), timeframe, period, deviation, bands_shift, applied_price, mode, shift);
 		}
 
-		double iCCI(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift)
+		double iCCI(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int>()(CmdId_iCCI, symbol, timeframe, period, applied_price, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int>()(CmdId_iCCI, resultString.c_str(), timeframe, period, applied_price, shift);
 		}
 
-		double iDeMarker(const std::string& symbol, const int& timeframe, const int& period, const int& shift)
+		double iDeMarker(const char *symbol, const int& timeframe, const int& period, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iDeMarker, symbol, timeframe, period, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iDeMarker, resultString.c_str(), timeframe, period, shift);
 		}
 
-		double iEnvelopes(const std::string & symbol, const int & timeframe, const int & ma_period, const int & ma_method, const int & ma_shift, const int & applied_price, const double & deviation, const int & mode, const int & shift)
+		double iEnvelopes(const char *symbol, const int & timeframe, const int & ma_period, const int & ma_method, const int & ma_shift, const int & applied_price, const double & deviation, const int & mode, const int & shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const double, const int, const int>()(CmdId_iEnvelopes, symbol, timeframe, ma_period, ma_method, ma_shift, applied_price, deviation, mode, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const double, const int, const int>()(CmdId_iEnvelopes, resultString.c_str(), timeframe, ma_period, ma_method, ma_shift, applied_price, deviation, mode, shift);
 		}
 
-		double iForce(const std::string& symbol, const int& timeframe, const int& period, const int& ma_method, const int& applied_price, const int& shift)
+		double iForce(const char *symbol, const int& timeframe, const int& period, const int& ma_method, const int& applied_price, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int>()(CmdId_iForce, symbol, timeframe, period, ma_method, applied_price, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int>()(CmdId_iForce, resultString.c_str(), timeframe, period, ma_method, applied_price, shift);
 		}
 
-		double iFractals(const std::string& symbol, const int& timeframe, const int& mode, const int& shift)
+		double iFractals(const char *symbol, const int& timeframe, const int& mode, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iFractals, symbol, timeframe, mode, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iFractals, resultString.c_str(), timeframe, mode, shift);
 		}
 
 		double iGator
 		(
-			const std::string& symbol,
+			const char *symbol,
 			const int& timeframe,
 			const int& jaw_period,
 			const int& jaw_shift,
@@ -442,6 +491,7 @@ namespace PyMT4
 			const int& shift
 		)
 		{
+			std::string resultString = symbol;
 			return DispatchFunction<double,
 				const std::string,
 				const int,
@@ -456,7 +506,7 @@ namespace PyMT4
 				const int,
 				const int>()
 				(CmdId_iGator,
-					symbol,
+					resultString.c_str(),
 					timeframe,
 					jaw_period,
 					jaw_shift,
@@ -470,74 +520,88 @@ namespace PyMT4
 					shift);
 		}
 
-		double iIchimoku(const std::string & symbol, const int & timeframe, const int & tenkan_sen, const int & kijun_sen, const int & senkou_span_b, const int & mode, const int & shift)
+		double iIchimoku(const char *symbol, const int & timeframe, const int & tenkan_sen, const int & kijun_sen, const int & senkou_span_b, const int & mode, const int & shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int>()(CmdId_iIchimoku, symbol, timeframe, tenkan_sen, kijun_sen, senkou_span_b, mode, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int>()(CmdId_iIchimoku, resultString.c_str(), timeframe, tenkan_sen, kijun_sen, senkou_span_b, mode, shift);
 		}
 
-		double iBWMFI(const std::string& symbol, const int& timeframe, const int& shift)
+		double iBWMFI(const char *symbol, const int& timeframe, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int>()(CmdId_iBWMFI, symbol, timeframe, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int>()(CmdId_iBWMFI, resultString.c_str(), timeframe, shift);
 		}
 
-		double iMomentum(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift)
+		double iMomentum(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int>()(CmdId_iMomentum, symbol, timeframe, period, applied_price, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int>()(CmdId_iMomentum, resultString.c_str(), timeframe, period, applied_price, shift);
 		}
 
-		double iMFI(const std::string& symbol, const int& timeframe, const int& period, const int& shift)
+		double iMFI(const char *symbol, const int& timeframe, const int& period, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iMFI, symbol, timeframe, period, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iMFI, resultString.c_str(), timeframe, period, shift);
 		}
 
-		double iMA(const std::string& symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift)
+		double iMA(const char *symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int>()(CmdId_iMA, symbol, timeframe, ma_period, ma_shift, ma_method, applied_price, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int>()(CmdId_iMA, resultString.c_str(), timeframe, ma_period, ma_shift, ma_method, applied_price, shift);
 		}
 
-		double iOsMA(const std::string& symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& shift)
+		double iOsMA(const char *symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int>()(CmdId_iOsMA, symbol, timeframe, fast_ema_period, slow_ema_period, signal_period, applied_price, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int>()(CmdId_iOsMA, resultString.c_str(), timeframe, fast_ema_period, slow_ema_period, signal_period, applied_price, shift);
 		}
 
-		double iMACD(const std::string& symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& mode, const int& shift)
+		double iMACD(const char *symbol, const int& timeframe, const int& fast_ema_period, const int& slow_ema_period, const int& signal_period, const int& applied_price, const int& mode, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int, const int>()(CmdId_iMACD, symbol, timeframe, fast_ema_period, slow_ema_period, signal_period, applied_price, mode, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int, const int>()(CmdId_iMACD, resultString.c_str(), timeframe, fast_ema_period, slow_ema_period, signal_period, applied_price, mode, shift);
 		}
 
-		double iOBV(const std::string& symbol, const int& timeframe, const int& applied_price, const int& shift)
+		double iOBV(const char *symbol, const int& timeframe, const int& applied_price, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iOBV, symbol, timeframe, applied_price, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iOBV, resultString.c_str(), timeframe, applied_price, shift);
 		}
 
-		double iRSI(const std::string& symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift)
+		double iRSI(const char *symbol, const int& timeframe, const int& period, const int& applied_price, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int>()(CmdId_iRSI, symbol, timeframe, period, applied_price, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int>()(CmdId_iRSI, resultString.c_str(), timeframe, period, applied_price, shift);
 		}
 
-		double iRVI(const std::string& symbol, const int& timeframe, const int& mode, const int& shift)
+		double iRVI(const char *symbol, const int& timeframe, const int& mode, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iRVI, symbol, timeframe, mode, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iRVI, resultString.c_str(), timeframe, mode, shift);
 		}
 
-		double iSAR(const std::string & symbol, const int & timeframe, const double & sar_step, const double & maximum, const int & shift)
+		double iSAR(const char *symbol, const int & timeframe, const double & sar_step, const double & maximum, const int & shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const double, const double, const int>()(CmdId_iSAR, symbol, timeframe, sar_step, maximum, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const double, const double, const int>()(CmdId_iSAR, resultString.c_str(), timeframe, sar_step, maximum, shift);
 		}
 
-		double iStdDev(const std::string& symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift)
+		double iStdDev(const char *symbol, const int& timeframe, const int& ma_period, const int& ma_shift, const int& ma_method, const int& applied_price, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int>()(CmdId_iStdDev, symbol, timeframe, ma_period, ma_shift, ma_method, applied_price, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int>()(CmdId_iStdDev, resultString.c_str(), timeframe, ma_period, ma_shift, ma_method, applied_price, shift);
 		}
 
-		double iStochastic(const std::string & symbol, const int & timeframe, const int & Kperiod, const int & Dperiod, const int & slowing, const int & method, const int & price_field, const int & mode, const int & shift)
+		double iStochastic(const char *symbol, const int & timeframe, const int & Kperiod, const int & Dperiod, const int & slowing, const int & method, const int & price_field, const int & mode, const int & shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int, const int, const int>()(CmdId_iStochastic, symbol, timeframe, Kperiod, Dperiod, slowing, method, price_field, mode, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int, const int, const int, const int, const int, const int>()(CmdId_iStochastic, resultString.c_str(), timeframe, Kperiod, Dperiod, slowing, method, price_field, mode, shift);
 		}
 
-		double iWPR(const std::string& symbol, const int& timeframe, const int& period, const int& shift)
+		double iWPR(const char *symbol, const int& timeframe, const int& period, const int& shift)
 		{
-			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iWPR, symbol, timeframe, period, shift);
+			std::string resultString = symbol;
+			return DispatchFunction<double, const std::string, const int, const int, const int>()(CmdId_iWPR, resultString.c_str(), timeframe, period, shift);
 		}
 
 		bool Set_Flow_Return_Value(const bool & flow_return_value)

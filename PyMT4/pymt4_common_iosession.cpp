@@ -22,161 +22,161 @@
 
 namespace PyMT4 
 {
-
-
-bool IOSessionCommon::disconnect()
-{
-#ifdef _DEBUG
-	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK -> socket -> close" << "\n";
-#endif
-
-	socket().close();
-	return true;
-}
-
-IOSessionCommon::~IOSessionCommon()
-{
-
-}
-
-IOSessionCommon::IOSessionCommon(io_service& ioService) :
-	m_ioService(ioService),
-	m_socket(ioService),
-	m_id(uuids::random_generator()())
-{
-	m_messageHandlerMap.resize(MessageMax);
-	m_readBuffer.reserve(IO_BUFFER_SIZE);
-	m_writeBuffer.reserve(IO_BUFFER_SIZE);
-}
-
-void IOSessionCommon::registerHandler(const MessageTypeIdentifier& message,const MessageHandlerFunc& function)
-{
-#ifdef _DEBUG
-	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
-#endif
-
-	if (message > MESSAGE_MAX)
+	bool IOSessionCommon::disconnect()
 	{
-		throw Exception("Message out of range. Value greater than MessageType::MESSAGE_MAX");
+#ifdef _DEBUG
+		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK. socket().close()" << std::endl;
+#endif
+		socket().close();
+		return true;
 	}
 
-	if (m_messageHandlerMap[message] != 0)
+    IOSessionCommon::~IOSessionCommon()
+    {
+        //--- Do nothing
+    }
+
+	IOSessionCommon::IOSessionCommon(io_service& ioService) :
+		m_ioService(ioService),
+		m_socket(ioService),
+		m_id(uuids::random_generator()())
 	{
-		throw Exception(std::string("Message handler already defined for ") + boost::lexical_cast<std::string, int32_t>(message));
+#ifdef _DEBUG
+		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK" << std::endl;
+#endif
+		m_messageHandlerMap.resize(MessageMax);
+		m_readBuffer.reserve(IO_BUFFER_SIZE);
+		m_writeBuffer.reserve(IO_BUFFER_SIZE);
 	}
 
-	m_messageHandlerMap[message] = function;
-}
-
-
-void IOSessionCommon::readHeader()
-{
-#ifdef _DEBUG
-	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK -> headerHandler" << "\n";
-#endif
-
-	boost::mutex::scoped_lock scopedLock(_sessionMutex);
-	m_readBuffer.clear();
-	m_readBuffer.resize(IO_HEADER_SIZE);
-	async_read(m_socket, buffer(m_readBuffer), bind(&IOSessionCommon::headerHandler, shared_from_this(), boost::asio::placeholders::error));
-}
-
-void IOSessionCommon::writeMessage(MessageHeaderPtr message)
-{
-#ifdef _DEBUG
-	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
-#endif
-
-	boost::mutex::scoped_lock scopedLock(_sessionMutex);
-
-	Buffer& messageBuffer = message->messageBuffer();
-	size_t payloadSize = messageBuffer.size() - IO_HEADER_SIZE;
-	(*reinterpret_cast<size_t*>(messageBuffer.data()+sizeof(MessageTypeIdentifier))) = payloadSize;
-
-	async_write(m_socket, buffer(message->messageBuffer()), bind(&IOSessionCommon::writeHandler, shared_from_this(), message, boost::asio::placeholders::error));
-}
-
-void IOSessionCommon::writeHandler(MessageHeaderPtr message,const boost::system::error_code& error)
-{
-#ifdef _DEBUG
-	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << "\n";
-#endif
-
-	if (error)
-	{
-		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: " << error.message() << "\n";
-	}
-}
-
-void IOSessionCommon::headerHandler(const boost::system::error_code& error)
-{
-	boost::mutex::scoped_lock scopedLock(_sessionMutex);
-
-	if (!error)
+	void IOSessionCommon::registerHandler(const MessageTypeIdentifier& message, const MessageHandlerFunc& function)
 	{
 #ifdef _DEBUG
-		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK -> async_read" << "\n";
+		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << std::endl;
 #endif
 
-		Buffer::iterator readBufferIter = m_readBuffer.begin();
-		MessageTypeIdentifier			messageTypeIdentifier;
-		size_t							messageContentSize;
-
-		Serializer<MessageTypeIdentifier>::deserializeItem(&messageTypeIdentifier,&readBufferIter);
-		Serializer<size_t>::deserializeItem(&messageContentSize,&readBufferIter);
-
-		MessageUID messageuid;
-		size_t msguuid_size=0;
-		Serializer<size_t>::deserializeItem(&msguuid_size,&readBufferIter);
-
-
-		for (uint8_t index = 0; index < MessageUID::static_size(); ++index)
+		if (message > MESSAGE_MAX)
 		{
-			Serializer<uint8_t>::deserializeItem(&messageuid.data[index], &readBufferIter);
+			throw Exception("Message out of range. Value greater than MessageType::MESSAGE_MAX");
 		}
 
-		m_readBuffer.resize(m_readBuffer.size() + messageContentSize);
+		if (m_messageHandlerMap[message] != 0)
+		{
+			throw Exception(std::string("Message handler already defined for ") + boost::lexical_cast<std::string, int32_t>(message));
+		}
 
-		async_read(m_socket,
-			buffer(&m_readBuffer[IO_HEADER_SIZE],
-				   messageContentSize),
-			transfer_at_least(messageContentSize),
-			bind(&IOSessionCommon::messageHandler, shared_from_this(), messageuid, messageTypeIdentifier, boost::asio::placeholders::error));
+		m_messageHandlerMap[message] = function;
 	}
-#ifdef _DEBUG
-	else
+
+
+	void IOSessionCommon::readHeader()
 	{
-		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: " << error.message() << "\n";
-	}
+//#ifdef _DEBUG
+//        std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK -> headerHandler" << std::endl;
+//#endif
+
+	    boost::mutex::scoped_lock scopedLock(_sessionMutex);
+	    m_readBuffer.clear();
+	    m_readBuffer.resize(IO_HEADER_SIZE);
+	    async_read(m_socket, buffer(m_readBuffer), bind(&IOSessionCommon::headerHandler, shared_from_this(), boost::asio::placeholders::error));
+    }
+
+    void IOSessionCommon::writeMessage(MessageHeaderPtr message)
+    {
+	    boost::mutex::scoped_lock scopedLock(_sessionMutex);
+
+	    Buffer& messageBuffer = message->messageBuffer();
+	    size_t payloadSize = messageBuffer.size() - IO_HEADER_SIZE;
+	    (*reinterpret_cast<size_t*>(messageBuffer.data()+sizeof(MessageTypeIdentifier))) = payloadSize;
+
+#ifdef _DEBUG
+    	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK -> async_write()" << std::endl;
 #endif
 
-}
+	    async_write(m_socket, buffer(message->messageBuffer()), bind(&IOSessionCommon::writeHandler, shared_from_this(), message, boost::asio::placeholders::error));
+    }
 
-void IOSessionCommon::messageHandler(const MessageUID& messageuid,const MessageTypeIdentifier& messageTypeIdentifier,const boost::system::error_code& error)
-{
-	if (!error)
-	{
+    void IOSessionCommon::writeHandler(MessageHeaderPtr message, const boost::system::error_code& error)
+    {
+//#ifdef _DEBUG
+//    	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK" << std::endl;
+//#endif
+
+	    if (error)
+	    {
+            //std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: " << error.message() << std::endl;
+	    }
+    }
+
+    void IOSessionCommon::headerHandler(const boost::system::error_code& error)
+    {
+	    boost::mutex::scoped_lock scopedLock(_sessionMutex);
+
+	    if (!error)
+	    {
+//#ifdef _DEBUG
+//		    std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK -> async_read()" << std::endl;
+//#endif
+
+		    Buffer::iterator readBufferIter = m_readBuffer.begin();
+		    MessageTypeIdentifier			messageTypeIdentifier;
+		    size_t							messageContentSize;
+
+		    Serializer<MessageTypeIdentifier>::deserializeItem(&messageTypeIdentifier,&readBufferIter);
+		    Serializer<size_t>::deserializeItem(&messageContentSize,&readBufferIter);
+
+		    MessageUID messageuid;
+		    size_t msguuid_size=0;
+		    Serializer<size_t>::deserializeItem(&msguuid_size,&readBufferIter);
+
+
+		    for (uint8_t index = 0; index < MessageUID::static_size(); ++index)
+		    {
+			    Serializer<uint8_t>::deserializeItem(&messageuid.data[index], &readBufferIter);
+		    }
+
+		    m_readBuffer.resize(m_readBuffer.size() + messageContentSize);
+
+		    async_read(m_socket,
+			    buffer(&m_readBuffer[IO_HEADER_SIZE],
+				       messageContentSize),
+			    transfer_at_least(messageContentSize),
+			    bind(&IOSessionCommon::messageHandler, shared_from_this(), messageuid, messageTypeIdentifier, boost::asio::placeholders::error));
+	    }
 #ifdef _DEBUG
-		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info:OK -> readHeader" << "\n";
+	    else
+	    {
+		    std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: " << error.message() << std::endl;
+	    }
 #endif
+    }
+
+    void IOSessionCommon::messageHandler(const MessageUID& messageuid,const MessageTypeIdentifier& messageTypeIdentifier,const boost::system::error_code& error)
+    {
+    	if (!error)
+    	{
+//#ifdef _DEBUG
+//            std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info:OK -> readHeader()" << std::endl;
+//#endif
 
 		{
-		boost::mutex::scoped_lock scopedLock(_sessionMutex);
-		if (!m_messageHandlerMap[messageTypeIdentifier]) {
-			return; // No Handler Defined.
-		}
-		Buffer::iterator deserializeIter = m_readBuffer.begin()+IO_HEADER_SIZE;
+		    boost::mutex::scoped_lock scopedLock(_sessionMutex);
+		    if (!m_messageHandlerMap[messageTypeIdentifier])
+            {
+			    return; // No Handler Defined.
+		    }
+		    Buffer::iterator deserializeIter = m_readBuffer.begin()+IO_HEADER_SIZE;
 
 
-		m_messageHandlerMap[messageTypeIdentifier](messageTypeIdentifier,messageuid,deserializeIter,m_readBuffer.end(),error);
-		}
+		    m_messageHandlerMap[messageTypeIdentifier](messageTypeIdentifier,messageuid,deserializeIter,m_readBuffer.end(),error);
+		    }
 
-		readHeader();
-	}
-	else
-	{
-		std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: " << error.message() << "\n";
-	}
-}
+		    readHeader();
+	    }
+	    else
+	    {
+		    std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Error: " << error.message() << std::endl;
+	    }
+    }
 
 }

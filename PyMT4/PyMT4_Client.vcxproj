@@ -72,14 +72,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(SolutionDir)$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(SolutionDir)$(Configuration)\$(ProjectName)\</IntDir>
     <TargetExt>.pyd</TargetExt>
     <TargetName>PyMT4</TargetName>
     <IncludePath>$(IncludePath);C:\Python27\x86\include</IncludePath>
     <LibraryPath>$(LibraryPath);C:\Python27\x86\libs</LibraryPath>
     <SourcePath>$(ProjectDir);$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;</SourcePath>
-    <OutDir>C:\Personal\Installer\Python MT4 Backtest\PyMT4\Release\</OutDir>
+    <OutDir>$(SolutionDir)Release\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.pyd</TargetExt>
@@ -112,6 +112,7 @@
       <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WIN32_WINNT=0x0501;BOOST_PYTHON_STATIC_LIB;_SCL_SECURE_NO_WARNINGS;PYMT4_CLIENT;WIN32;_DEBUG;_WINDOWS;_USRDLL;PYMT4_CLIENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

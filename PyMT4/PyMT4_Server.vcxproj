@@ -73,11 +73,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)Release\</OutDir>
     <TargetName>pymt4</TargetName>
     <IncludePath>C:\Boost\boost;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>pymt4</TargetName>
@@ -105,14 +106,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;PYMT4_SERVER;WIN32;_DEBUG;_WINDOWS;_USRDLL;PYMT4_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>pymt4_server.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "$(SolutionDir)$(Configuration)\pymt4.dll" "C:\Users\kwlam\AppData\Roaming\MetaQuotes\Terminal\665808C9038917B2C1B3E26FB0012C0E\MQL4\Libraries\pymt4.dll"</Command>
+      <Command>xcopy /y "$(SolutionDir)Release\pymt4.dll" "C:\Users\kwlam\AppData\Roaming\MetaQuotes\Terminal\665808C9038917B2C1B3E26FB0012C0E\MQL4\Libraries\pymt4.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

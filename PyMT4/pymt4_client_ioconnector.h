@@ -44,7 +44,6 @@ namespace PyMT4
 
 	typedef boost::function<void(const std::string& , const double&, const double&, const int&)> OnTickHandlerFunc;
 	typedef boost::uuids::uuid OnTickHandlerId;
-	
 	typedef std::map<OnTickHandlerId,std::pair<bool, OnTickHandlerFunc> > OnTickHandlerList;
 
 	typedef boost::function<void(const bool&)> ConnectCallback;
@@ -57,10 +56,7 @@ namespace PyMT4
 	{
 		friend class IOSession;
 
-
-
 	public:
-
 		bool connect(const string& address="127.0.0.1",const uint32_t& port=DEFAULT_PORT);
 		void connect(ConnectCallback,const string& address="127.0.0.1",const uint32_t& port=DEFAULT_PORT);
 
@@ -72,12 +68,11 @@ namespace PyMT4
 
 		OnTickHandlerId registerOnTickHandler(const OnTickHandlerFunc& func);
 		void		    onTickDispatcher(const OnTickHandlerFunc& handlerFunc, IOSessionPtr session,const MessageUID& messageuid, const OnTickHandlerId& id,const std::string& symbol, const double& bid, const double& ask, const int& counter);
-		void		    notifyOnTick(IOSessionPtr session,const MessageUID& messageuid,const std::string& symbol, const double& bid, const double& ask, const int& counter);
+		void		    notifyOnTick(IOSessionPtr session, const MessageUID& messageuid, const std::string& symbol,  const double& bid, const double& ask, const int& counter);
 			
-
 		~IOConnector();
-	private:
 
+    private:
 		boost::thread_group	    _poolThreadGroup;
 		boost::asio::io_service _poolIOService;
 		boost::asio::io_service::work _poolWork;
@@ -100,7 +95,6 @@ namespace PyMT4
 		boost::shared_ptr<thread>	m_iosThread;
 
 		IOSessionMap		m_sessions;
-
 	};
 
 }

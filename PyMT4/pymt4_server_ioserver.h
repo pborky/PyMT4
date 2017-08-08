@@ -69,15 +69,13 @@ namespace PyMT4
 		io_service::work	m_iosWork;
 		shared_ptr<thread>	m_iosThread;
 
-		OnTickResultList _onTickResults;
-			
+		OnTickResultList	_onTickResults;
+
 		IOSessionMap		_sessionList;
 
 		boost::mutex		_servermutex;
 		boost::condition_variable
 							_processCondition;
-		
-		bool				_shutdownRequest;
 		
 		PendingCommandPtr   _currentCommand;
 		/*Static*/

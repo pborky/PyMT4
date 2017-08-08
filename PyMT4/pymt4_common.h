@@ -18,9 +18,6 @@
 
 #pragma once
 
-
-
-#ifndef _DEBUG
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
@@ -29,14 +26,8 @@
 #include <boost/foreach.hpp>
 
 namespace PyMT4 {
-#define DEBUG(MSG) std::cout<<__FUNCSIG__<<" : "<<std::endl<<">> "<<MSG<<std::endl;
+    #define DEBUG(MSG) std::cout << __FUNCSIG__ << ": " << std::endl << ">> " << MSG << std::endl;
 }
-#else
-namespace PyMT4 {
-#define DEBUG(MSG) //std::cout<<__FUNCSIG__<<" : "<<std::endl<<">> "<<MSG<<std::endl;
-}
-#endif
-
 
 #define DEFAULT_PORT 5621
 
@@ -61,7 +52,8 @@ namespace PyMT4 {
 
 
 namespace PyMT4 { 
-	class Exception : public std::exception  {
+	class Exception : public std::exception
+    {
 	private:
 		const std::string	m_message;
 	public:
@@ -195,6 +187,8 @@ namespace PyMT4 {
 		CmdId_Symbol,
 		CmdId_Period,
 		CmdId_RefreshRates,
+		CmdId_ExpertRemove,
+		CmdId_TerminalClose,
 
 		CmdId_TimeCurrent = 1600,
 		CmdId_TimeLocal,

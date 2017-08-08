@@ -110,6 +110,8 @@ enum CmdIdType
     CmdId_Symbol,
     CmdId_Period,
 	CmdId_RefreshRates,
+	CmdId_ExpertRemove,
+	CmdId_TerminalClose,
 
     CmdId_TimeCurrent = 1600,
     CmdId_TimeLocal,
@@ -172,6 +174,59 @@ enum CmdIdType
 #import
 
 
+int init()
+{
+    //--- Convert the strings to uchar[] arrays
+    uchar ucResult[DLL_READ_BUFFER_SIZE];
+    ArrayInitialize(ucResult, 0);
+    int symbol_size = StringToCharArray(Symbol(), ucResult);
+    if (!pymt4_initialize(ucResult, WindowHandle(Symbol(), Period())))
+    {
+        Print ("PyMT4 Already Initialized ...");
+        return (7);
+    }
+
+    Print ("PyMT4 Host Initialized ...");
+    bool is_continue = True;
+    while (is_continue)
+    {
+        //---
+        int pendingCommandId = pymt4_requestPendingCommand();
+        if (pendingCommandId != CmdId_CheckShutdownCondition)
+        {
+            is_continue = evaluateCommand(pendingCommandId);
+        }
+
+        if (IsStopped())
+        {
+            break;
+        }
+
+        //--- Delay to allow user to press cancel.
+        //--- Uncomment this delay if you are debugging or else it will affect performance especially
+        //--- during benchmarking run.
+        Sleep(50);
+    }
+
+    pymt4_uninitialize(ucResult, WindowHandle(Symbol(), Period()));
+    Print ("PyMT4 Host Uninitialized ...");
+    return (False);
+}
+
+
+int deinit()
+{
+    Print("Host Has Stopped");
+    return(0);
+}
+
+int start()
+{
+    Print("Host Has Started");
+    return(0);
+}
+
+
 void checkSelectedTicket(int ticketId)
 {
     //---
@@ -186,15 +241,31 @@ void checkSelectedTicket(int ticketId)
 }
 
 
+int getStringArgument(string &buffer_string)
+{
+    //---
+    uchar ucBuffer[DLL_READ_BUFFER_SIZE];
+    ArrayInitialize(ucBuffer, NULL);
+
+    //--- Load string into uchar Buffer
+    int ucBuffer1_size = pymt4_getStringArgument(ucBuffer);
+    buffer_string = CharArrayToString(ucBuffer, 0, ucBuffer1_size);
+
+    //--- In MSVC, Debug build will pad 4 additional NULL values in front of buffer.
+    if (buffer_string == "")
+    {
+        buffer_string = CharArrayToString(ucBuffer, 4, ucBuffer1_size);
+    }
+
+    return(ucBuffer1_size);
+}
+
+
 bool evaluateCommand(int pendingCommandId)
 {
     //---
     bool return_value = true;
-    uchar ucBuffer1[DLL_READ_BUFFER_SIZE];
-    uchar ucBuffer2[DLL_READ_BUFFER_SIZE];
     uchar ucResult[DLL_READ_BUFFER_SIZE];
-    ArrayInitialize(ucBuffer1, NULL);
-    ArrayInitialize(ucBuffer2, NULL);
     ArrayInitialize(ucResult, NULL);
 
     //---
@@ -244,9 +315,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_AccountFreeMarginCheck:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int cmd = pymt4_getIntArgument();
             double volume = pymt4_getDoubleArgument();
             pymt4_setDoubleResult(AccountFreeMarginCheck(symbol_string, cmd, volume), GetLastError());
@@ -314,90 +384,80 @@ bool evaluateCommand(int pendingCommandId)
         /* Trading Functions */
         case CmdId_iBars:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setIntResult(iBars(symbol_string, pymt4_getIntArgument()), GetLastError());
             break;
         }
 
         case CmdId_iBarShift:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setIntResult(iBarShift(symbol_string, pymt4_getIntArgument(), pymt4_getBoolArgument()), GetLastError());
             break;
         }
 
         case CmdId_iClose:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setDoubleResult(iClose(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
         case CmdId_iHigh:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setDoubleResult(iHigh(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
         case CmdId_iHighest:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setDoubleResult(iHighest(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument(), pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
         case CmdId_iLow:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setDoubleResult(iLow(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
         case CmdId_iLowest:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setDoubleResult(iLowest(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
         case CmdId_iOpen:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setDoubleResult(iOpen(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
         case CmdId_iTime:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setDoubleResult(iTime(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
 
         case CmdId_iVolume:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setDoubleResult(iVolume(symbol_string, pymt4_getIntArgument(), pymt4_getIntArgument()), GetLastError());
             break;
         }
@@ -536,9 +596,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_OrderSend:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string   symbol = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string   symbol_string;
+            int      ucBuffer1_size = getStringArgument(symbol_string);
             int      cmd = pymt4_getIntArgument();
             double   volume = pymt4_getDoubleArgument();
             double   price = pymt4_getDoubleArgument();
@@ -546,22 +605,22 @@ bool evaluateCommand(int pendingCommandId)
             double   stoploss = pymt4_getDoubleArgument();
             double   takeprofit = pymt4_getDoubleArgument();
 
-            int ucBuffer2_size = pymt4_getStringArgument(ucBuffer2);
-            string   comment = CharArrayToString(ucBuffer2, 0, ucBuffer2_size);
+            string   comment_string;
+            int      ucBuffer2_size = getStringArgument(comment_string);
             int      magic = pymt4_getIntArgument();
             datetime expiration = pymt4_getIntArgument();
             int      arrow_color = pymt4_getIntArgument();
 
             pymt4_setIntResult(
                              OrderSend(
-                                symbol,
+                                symbol_string,
                                 cmd,
                                 volume,
                                 price,
                                 slippage,
                                 stoploss,
                                 takeprofit,
-                                comment,
+                                comment_string,
                                 magic,
                                 expiration,
                                 arrow_color
@@ -730,9 +789,8 @@ bool evaluateCommand(int pendingCommandId)
         /* Common Functions */
         case CmdId_Alert:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             Alert(symbol_string);
             pymt4_setBoolResult(True, GetLastError());
             break;
@@ -740,9 +798,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_Comment:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             Comment(symbol_string);
             pymt4_setBoolResult(True, GetLastError());
             break;
@@ -756,10 +813,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_MarketInfo:
         {
-            Print("CmdId_MarketInfo");
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int mode = pymt4_getIntArgument();
             pymt4_setDoubleResult(MarketInfo(symbol_string, mode), GetLastError());
             break;
@@ -767,9 +822,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_PlaySound:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             PlaySound(symbol_string);
             pymt4_setBoolResult(True, GetLastError());
             break;
@@ -777,9 +831,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_Print:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             Print(symbol_string);
             pymt4_setBoolResult(True, GetLastError());
             break;
@@ -787,20 +840,18 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_SendFTP:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setBoolResult(SendFTP(symbol_string,symbol_string), GetLastError());
             break;
         }
 
         case CmdId_SendMail:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string dll_arg_string1 = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
-            int ucBuffer2_size = pymt4_getStringArgument(ucBuffer2);
-            string dll_arg_string2 = CharArrayToString(ucBuffer2, 0, ucBuffer2_size);
+            string dll_arg_string1;
+            int ucBuffer1_size = getStringArgument(dll_arg_string1);
+            string dll_arg_string2;
+            int ucBuffer2_size = getStringArgument(dll_arg_string2);
             SendMail(dll_arg_string1, dll_arg_string2);
             pymt4_setBoolResult(True, GetLastError());
             break;
@@ -808,9 +859,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_SendNotification:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             pymt4_setBoolResult(SendNotification(symbol_string), GetLastError());
             break;
         }
@@ -832,6 +882,22 @@ bool evaluateCommand(int pendingCommandId)
         case CmdId_RefreshRates:
         {
             pymt4_setBoolResult(RefreshRates(), GetLastError());
+            break;
+        }
+
+        case CmdId_ExpertRemove:
+        {
+            //--- Set result first prior to stopping the EA
+            pymt4_setBoolResult(true, GetLastError());
+            ExpertRemove();
+            return_value = false;
+            break;
+        }
+
+        case CmdId_TerminalClose:
+        {
+            int ret_code = pymt4_getIntArgument();
+            pymt4_setBoolResult(TerminalClose(ret_code), GetLastError());
             break;
         }
 
@@ -861,9 +927,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iAC:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
             pymt4_setDoubleResult(iAC(symbol_string, timeframe, shift), GetLastError());
@@ -872,9 +937,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iAD:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
             pymt4_setDoubleResult(iAD(symbol_string, timeframe, shift), GetLastError());
@@ -883,9 +947,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iADX:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int applied_price = pymt4_getIntArgument();
@@ -897,9 +960,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iAlligator:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int jaw_period = pymt4_getIntArgument();
             int jaw_shift = pymt4_getIntArgument();
@@ -919,9 +981,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iAO:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
             pymt4_setDoubleResult(iAO(symbol_string, timeframe, shift), GetLastError());
@@ -930,9 +991,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iATR:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
@@ -942,9 +1002,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iBearsPower:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int applied_price = pymt4_getIntArgument();
@@ -955,9 +1014,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iBands:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             double deviation = pymt4_getDoubleArgument();
@@ -971,9 +1029,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iCCI:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int applied_price = pymt4_getIntArgument();
@@ -984,9 +1041,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iDeMarker:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
@@ -996,9 +1052,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iEnvelopes:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int ma_period = pymt4_getIntArgument();
             int ma_method = pymt4_getIntArgument();
@@ -1014,9 +1069,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iForce:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int ma_method = pymt4_getIntArgument();
@@ -1029,9 +1083,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iFractals:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int mode = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
@@ -1041,9 +1094,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iGator:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int jaw_period = pymt4_getIntArgument();
             int jaw_shift = pymt4_getIntArgument();
@@ -1063,9 +1115,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iIchimoku:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int tenkan_sen = pymt4_getIntArgument();
             int kijun_sen = pymt4_getIntArgument();
@@ -1079,9 +1130,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iBWMFI:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
             pymt4_setDoubleResult(iBWMFI(symbol_string, timeframe, shift), GetLastError());
@@ -1090,9 +1140,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iMomentum:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int applied_price = pymt4_getIntArgument();
@@ -1103,9 +1152,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iMFI:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
@@ -1115,9 +1163,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iMA:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int ma_period = pymt4_getIntArgument();
             int ma_method = pymt4_getIntArgument();
@@ -1131,9 +1178,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iOsMA:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int fast_ema_period = pymt4_getIntArgument();
             int slow_ema_period = pymt4_getIntArgument();
@@ -1147,9 +1193,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iMACD:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int fast_ema_period = pymt4_getIntArgument();
             int slow_ema_period = pymt4_getIntArgument();
@@ -1164,9 +1209,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iOBV:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int applied_price = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
@@ -1176,9 +1220,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iRSI:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int applied_price = pymt4_getIntArgument();
@@ -1189,9 +1232,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iRVI:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int mode = pymt4_getIntArgument();
@@ -1202,9 +1244,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iSAR:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             double sar_step = pymt4_getDoubleArgument();
             double maximum = pymt4_getDoubleArgument();
@@ -1215,9 +1256,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iStdDev:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int ma_period = pymt4_getIntArgument();
             int ma_shift = pymt4_getIntArgument();
@@ -1231,9 +1271,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iStochastic:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int Kperiod = pymt4_getIntArgument();
             int Dperiod = pymt4_getIntArgument();
@@ -1249,9 +1288,8 @@ bool evaluateCommand(int pendingCommandId)
 
         case CmdId_iWPR:
         {
-            //--- Load string into uchar Buffer
-            int ucBuffer1_size = pymt4_getStringArgument(ucBuffer1);
-            string symbol_string = CharArrayToString(ucBuffer1, 0, ucBuffer1_size);
+            string symbol_string;
+            int ucBuffer1_size = getStringArgument(symbol_string);
             int timeframe = pymt4_getIntArgument();
             int period = pymt4_getIntArgument();
             int shift = pymt4_getIntArgument();
@@ -1269,62 +1307,9 @@ bool evaluateCommand(int pendingCommandId)
         default:
         {
             PrintFormat("Received unknown (%d) command!", pendingCommandId);
-            ExpertRemove();
+            return_value = false;
         }
     }
 
     return(return_value);
-}
-
-
-int init()
-{
-    //--- Convert the strings to uchar[] arrays
-    uchar ucResult[DLL_READ_BUFFER_SIZE];
-    ArrayInitialize(ucResult, 0);
-    int symbol_size = StringToCharArray(Symbol(), ucResult);
-    if (!pymt4_initialize(ucResult, WindowHandle(Symbol(), Period())))
-    {
-        Print ("PyMT4 Already Initialized ...");
-        return (7);
-    }
-
-    Print ("PyMT4 Host Initialized ...");
-    bool is_continue = True;
-    while (is_continue)
-    {
-        //---
-        int pendingCommandId = pymt4_requestPendingCommand();
-        if (pendingCommandId != CmdId_CheckShutdownCondition)
-        {
-            is_continue = evaluateCommand(pendingCommandId);
-        }
-
-        if (IsStopped())
-        {
-            break;
-        }
-
-        //--- Delay to allow user to press cancel.
-        //--- Uncomment this delay if you are debugging or else it will affect performance especially
-        //--- during benchmarking run.
-        Sleep(50);
-    }
-
-    pymt4_uninitialize(ucResult, WindowHandle(Symbol(), Period()));
-    Print ("PyMT4 Host Uninitialized ...");
-    return (False);
-}
-
-
-int deinit()
-{
-    Print("Host Has Stopped");
-    return(0);
-}
-
-int start()
-{
-    Print("Host Has Started");
-    return(0);
 }

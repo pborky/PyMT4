@@ -39,7 +39,7 @@ namespace PyMT4
 	typedef boost::uuids::uuid MessageUID;
 
 	#define MESSAGE_MAX 2
-	#define RESULT_TIMEOUT 3000
+	#define RESULT_TIMEOUT 1000
 
 	DECLARE(MessageHeader);
 	DECLARE(MessageResult);
