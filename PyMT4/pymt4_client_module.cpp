@@ -27,6 +27,7 @@ typedef std::list<std::pair<std::string, boost::python::object>> PyShutdownHandl
 
 PyOnTickHandlerList pyOnTickHandlerList;
 PyShutdownHandlerList pyShutdownHandlerList;
+bool g_is_client_connected = false;
 
 void onTickHandler(const std::string& symbol, const double& bid, const double& ask, const int& counter)
 {
@@ -101,44 +102,51 @@ bool UnregisterOnTickHandler(boost::python::object& handler)
 }
 
 
-
 bool Disconnect()
 {
 	bool isDisconnected = false;
+
+    if (g_is_client_connected == true)
+    {
 #ifdef _DEBUG
-	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK, ioConnector -> Instance() -> disconnect()" << std::endl;
+        std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " Info: OK, ioConnector -> Instance() -> disconnect()" << std::endl;
 #endif
 
-	PyMT4::IOConnectorPtr ioConnector = PyMT4::IOConnector::Instance();
-	isDisconnected = ioConnector->disconnect();
+        PyMT4::IOConnectorPtr ioConnector = PyMT4::IOConnector::Instance();
+        isDisconnected = ioConnector->disconnect();
+        g_is_client_connected = !isDisconnected;
+    }
 	return isDisconnected;
 }
 
 bool Connect()
 {
-	bool isConnected = false;
+    bool isConnected = false;
 
+    if (g_is_client_connected == true)
+    {
+        g_is_client_connected = !Disconnect();
+    }
+
+    {
 #ifdef _DEBUG
-	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> Instance() -> ioConnector->registerOnTickHandler()" << std::endl;
+	    std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> Instance() -> ioConnector->registerOnTickHandler()" << std::endl;
 #endif
 
-	PyMT4::IOConnectorPtr ioConnector = PyMT4::IOConnector::Instance();
-	ioConnector->registerOnTickHandler(boost::bind(&onTickHandler, _1, _2, _3, _4));
-
-//#ifdef _DEBUG
-//	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> ioConnector->registerShutdownHandler" << std::endl;
-//#endif
-	//ioConnector->registerShutdownHandler(boost::bind(&onShutdownHandler, _1));
+	    PyMT4::IOConnectorPtr ioConnector = PyMT4::IOConnector::Instance();
+	    ioConnector->registerOnTickHandler(boost::bind(&onTickHandler, _1, _2, _3, _4));
 
 #ifdef _DEBUG
-	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> ioConnector->connect()" << std::endl;
+    	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK -> ioConnector->connect()" << std::endl;
 #endif
-	isConnected = ioConnector->connect();
+    	isConnected = ioConnector->connect();
+        g_is_client_connected = isConnected;
 
 #ifdef _DEBUG
-	std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK, isConnected: " << (isConnected ? "true" : "false") << std::endl;
+	    std::cout << __FILE__ << "," << __FUNCTION__ << ",L:" << __LINE__ << " OK, isConnected: " << (isConnected ? "true" : "false") << std::endl;
 #endif
-	return isConnected;
+    }
+    return isConnected;
 }
 
 
