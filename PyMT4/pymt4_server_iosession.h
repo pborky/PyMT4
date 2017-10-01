@@ -36,48 +36,48 @@
 
 namespace PyMT4
 {
-	using namespace std;
-	using namespace boost;
-	using namespace boost::asio;
-	using namespace boost::asio::ip;
+    using namespace std;
+    using namespace boost;
+    using namespace boost::asio;
+    using namespace boost::asio::ip;
 
-	using boost::shared_ptr;
-	using boost::bind;
+    using boost::shared_ptr;
+    using boost::bind;
 
-	DECLARE(IOServer);
-	DECLARE(IOSession);
-	DECLARE(PendingCommand);
+    DECLARE(IOServer);
+    DECLARE(IOSession);
+    DECLARE(PendingCommand);
 
-	class  PendingCommand
-	{
+    class  PendingCommand
+    {
 
-		PendingCommand();
+        PendingCommand();
 
-	public:
+    public:
 
-		static PendingCommandPtr    Create();
+        static PendingCommandPtr    Create();
 
-		IOSessionWPtr			session;
-		CommandIdentifier       commandId;
-		MessageUID				messageUID;
-		Buffer					data;
-		BufferPos				dataPos;
+        IOSessionWPtr            session;
+        CommandIdentifier       commandId;
+        MessageUID                messageUID;
+        Buffer                    data;
+        BufferPos                dataPos;
 
-	};
+    };
 
 
-	class IOSession : public IOSessionCommon
-	{
+    class IOSession : public IOSessionCommon
+    {
 
-	public:
+    public:
 
-		IOSession(io_service& ioService);
-		~IOSession();
-		bool MessageCommandHandler(const MessageTypeIdentifier&, const MessageUID& messageuid, Buffer::const_iterator&, Buffer::const_iterator&,const boost::system::error_code&);
-		bool messageResultHandler(const MessageTypeIdentifier& messageId,const MessageUID& messageuid, Buffer::const_iterator& begin, Buffer::const_iterator& end ,const boost::system::error_code& error);
-		void   initialize();
+        IOSession(io_service& ioService);
+        ~IOSession();
+        bool MessageCommandHandler(const MessageTypeIdentifier&, const MessageUID& messageuid, Buffer::const_iterator&, Buffer::const_iterator&,const boost::system::error_code&);
+        bool messageResultHandler(const MessageTypeIdentifier& messageId,const MessageUID& messageuid, Buffer::const_iterator& begin, Buffer::const_iterator& end ,const boost::system::error_code& error);
+        void   initialize();
 
-	};
+    };
 
 
 

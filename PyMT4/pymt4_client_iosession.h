@@ -25,28 +25,28 @@
 namespace PyMT4
 {
 
-	DECLARE(IOSession);
+    DECLARE(IOSession);
 
-	typedef std::deque<PendingResultPtr> PendingResultQueue;
+    typedef std::deque<PendingResultPtr> PendingResultQueue;
 
-	class IOSession : public IOSessionCommon
-	{
+    class IOSession : public IOSessionCommon
+    {
 
 
 
-		bool messageResultHandler(const MessageTypeIdentifier& messageId,const MessageUID& messageuid, Buffer::const_iterator& begin, Buffer::const_iterator& end ,const boost::system::error_code& error);
-		bool messageEventHandler(const MessageTypeIdentifier& messageId,const MessageUID& messageuid, Buffer::const_iterator& begin, Buffer::const_iterator& end ,const boost::system::error_code& error);
+        bool messageResultHandler(const MessageTypeIdentifier& messageId,const MessageUID& messageuid, Buffer::const_iterator& begin, Buffer::const_iterator& end ,const boost::system::error_code& error);
+        bool messageEventHandler(const MessageTypeIdentifier& messageId,const MessageUID& messageuid, Buffer::const_iterator& begin, Buffer::const_iterator& end ,const boost::system::error_code& error);
 
-		PendingResultQueue _pendingResultQueue;
+        PendingResultQueue _pendingResultQueue;
 
-	public:
-		IOSession(io_service& ioService);
-		~IOSession();
-		PendingResultPtr dispatchMessage(MessageHeaderPtr message);
-		void   initialize();
-		void   shutdown();
+    public:
+        IOSession(io_service& ioService);
+        ~IOSession();
+        PendingResultPtr dispatchMessage(MessageHeaderPtr message);
+        void   initialize();
+        void   shutdown();
 
-	};
+    };
 
 
 

@@ -10,6 +10,7 @@ if is_connected == True:
     time_start = printStartDateTime()
 
     current_symbol = Symbol()
+    print ('Symbol: ', current_symbol)
     print ('AccountBalance: ', AccountBalance())
     print ('AccountCredit: ', AccountCredit())
     print ('AccountCompany: ', AccountCompany())

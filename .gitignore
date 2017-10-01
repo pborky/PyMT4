@@ -76,3 +76,9 @@ PyMT4_Common.lib
 pymt4.iobj
 pymt4.ipdb
 vc140.pdb
+/Release/PyMT4.exp
+/Release/pymt4.exp
+/Release/PyMT4.lib
+/Release/pymt4.lib
+/Release/PyMT4.pdb
+/Release/pymt4.pdb

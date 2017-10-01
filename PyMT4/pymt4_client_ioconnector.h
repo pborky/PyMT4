@@ -32,69 +32,69 @@
 
 namespace PyMT4
 {
-	using namespace std;
-	using namespace boost::asio;
-	using namespace boost::asio::ip;
+    using namespace std;
+    using namespace boost::asio;
+    using namespace boost::asio::ip;
 
-	typedef pair<string,uint32_t> IOSessionAddress;
-	typedef map<IOSessionAddress,IOSession*> IOSessionMap;
+    typedef pair<string,uint32_t> IOSessionAddress;
+    typedef map<IOSessionAddress,IOSession*> IOSessionMap;
 
-	typedef boost::shared_ptr<mutex> SMutex;
-	typedef boost::shared_ptr<condition_variable> SCondition;
+    typedef boost::shared_ptr<mutex> SMutex;
+    typedef boost::shared_ptr<condition_variable> SCondition;
 
-	typedef boost::function<void(const std::string& , const double&, const double&, const int&)> OnTickHandlerFunc;
-	typedef boost::uuids::uuid OnTickHandlerId;
-	typedef std::map<OnTickHandlerId,std::pair<bool, OnTickHandlerFunc> > OnTickHandlerList;
+    typedef boost::function<void(const std::string& , const double&, const double&, const int&)> OnTickHandlerFunc;
+    typedef boost::uuids::uuid OnTickHandlerId;
+    typedef std::map<OnTickHandlerId,std::pair<bool, OnTickHandlerFunc> > OnTickHandlerList;
 
-	typedef boost::function<void(const bool&)> ConnectCallback;
+    typedef boost::function<void(const bool&)> ConnectCallback;
 
-	DECLARE(IOConnector);
+    DECLARE(IOConnector);
 
-	class IOSession;
+    class IOSession;
 
-	class IOConnector : public boost::noncopyable, public boost::enable_shared_from_this<IOConnector>
-	{
-		friend class IOSession;
+    class IOConnector : public boost::noncopyable, public boost::enable_shared_from_this<IOConnector>
+    {
+        friend class IOSession;
 
-	public:
-		bool connect(const string& address="127.0.0.1",const uint32_t& port=DEFAULT_PORT);
-		void connect(ConnectCallback,const string& address="127.0.0.1",const uint32_t& port=DEFAULT_PORT);
+    public:
+        bool connect(const string& address="127.0.0.1", const uint32_t& port=DEFAULT_PORT);
+        void connect(ConnectCallback, const string& address="127.0.0.1", const uint32_t& port=DEFAULT_PORT);
 
-		bool disconnect();
-		static IOConnectorPtr Instance();
+        bool disconnect();
+        static IOConnectorPtr Instance();
 
-		IOSessionMap& sessionMap();
-		PendingResultPtr dispatchMessage(const MessageHeaderPtr message);
+        IOSessionMap& sessionMap();
+        PendingResultPtr dispatchMessage(const MessageHeaderPtr message);
 
-		OnTickHandlerId registerOnTickHandler(const OnTickHandlerFunc& func);
-		void		    onTickDispatcher(const OnTickHandlerFunc& handlerFunc, IOSessionPtr session,const MessageUID& messageuid, const OnTickHandlerId& id,const std::string& symbol, const double& bid, const double& ask, const int& counter);
-		void		    notifyOnTick(IOSessionPtr session, const MessageUID& messageuid, const std::string& symbol,  const double& bid, const double& ask, const int& counter);
-			
-		~IOConnector();
+        OnTickHandlerId registerOnTickHandler(const OnTickHandlerFunc& func);
+        void            onTickDispatcher(const OnTickHandlerFunc& handlerFunc, IOSessionPtr session,const MessageUID& messageuid, const OnTickHandlerId& id,const std::string& symbol, const double& bid, const double& ask, const int& counter);
+        void            notifyOnTick(IOSessionPtr session, const MessageUID& messageuid, const std::string& symbol,  const double& bid, const double& ask, const int& counter);
+            
+        ~IOConnector();
 
     private:
-		boost::thread_group	    _poolThreadGroup;
-		boost::asio::io_service _poolIOService;
-		boost::asio::io_service::work _poolWork;
+        boost::thread_group        _poolThreadGroup;
+        boost::asio::io_service _poolIOService;
+        boost::asio::io_service::work _poolWork;
 
-		OnTickHandlerList _onTickHandlerList;
+        OnTickHandlerList _onTickHandlerList;
 
-		static IOConnectorPtr m_instance;
+        static IOConnectorPtr m_instance;
 
-		IOConnector();
+        IOConnector();
 
-		void resolveHandler(ConnectCallback, const boost::system::error_code& error,tcp::resolver::iterator iterator);
-		void connectHandler(IOSessionPtr,ConnectCallback,const boost::system::error_code& error);
+        void resolveHandler(ConnectCallback, const boost::system::error_code& error,tcp::resolver::iterator iterator);
+        void connectHandler(IOSessionPtr,ConnectCallback,const boost::system::error_code& error);
 
 
-		boost::mutex		_connectorMutex;
-		io_service			m_ioService;
-		tcp::resolver		m_resolver;
+        boost::mutex        _connectorMutex;
+        io_service            m_ioService;
+        tcp::resolver        m_resolver;
 
-		io_service::work	m_iosWork;
-		boost::shared_ptr<thread>	m_iosThread;
+        io_service::work    m_iosWork;
+        boost::shared_ptr<thread>    m_iosThread;
 
-		IOSessionMap		m_sessions;
-	};
+        IOSessionMap        m_sessions;
+    };
 
 }

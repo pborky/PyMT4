@@ -71,40 +71,40 @@ class IOSessionCommon : public boost::enable_shared_from_this<IOSessionCommon>
 {
 
 public:
-	
+    
 
-	IOSessionCommon(io_service& ioService);
+    IOSessionCommon(io_service& ioService);
 
-	virtual ~IOSessionCommon();
-
-
-	inline tcp::socket&	socket() { return m_socket; }
-	inline IOSessionID& id()	 { return m_id; }
-	bool   disconnect();
-	void   writeMessage(MessageHeaderPtr message);
-
-protected:
-
-	tcp::socket			m_socket;
-	IOSessionID			m_id;
-	io_service&			m_ioService;
-	Buffer				m_readBuffer;
-	Buffer				m_writeBuffer;
+    virtual ~IOSessionCommon();
 
 
-	MessageHandlerMap	m_messageHandlerMap;
+    inline tcp::socket&    socket() { return m_socket; }
+    inline IOSessionID& id()     { return m_id; }
+    bool   disconnect();
+    void   writeMessage(MessageHeaderPtr message);
 
 protected:
-	boost::mutex        _sessionMutex;
+
+    tcp::socket            m_socket;
+    IOSessionID            m_id;
+    io_service&            m_ioService;
+    Buffer                m_readBuffer;
+    Buffer                m_writeBuffer;
+
+
+    MessageHandlerMap    m_messageHandlerMap;
+
+protected:
+    boost::mutex        _sessionMutex;
 private:
 
-	void headerHandler(const boost::system::error_code& code);
-	void messageHandler(const MessageUID& messageuid, const MessageTypeIdentifier&,const boost::system::error_code& code);
-	void writeHandler(MessageHeaderPtr message,const boost::system::error_code& code);
+    void headerHandler(const boost::system::error_code& code);
+    void messageHandler(const MessageUID& messageuid, const MessageTypeIdentifier&,const boost::system::error_code& code);
+    void writeHandler(MessageHeaderPtr message,const boost::system::error_code& code);
 
 protected:
-	void registerHandler(const MessageTypeIdentifier& message,const MessageHandlerFunc& function);
-	void readHeader();
+    void registerHandler(const MessageTypeIdentifier& message,const MessageHandlerFunc& function);
+    void readHeader();
 
 
 };

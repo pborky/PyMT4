@@ -36,122 +36,122 @@
 namespace PyMT4
 {
 
-	typedef boost::uuids::uuid MessageUID;
+    typedef boost::uuids::uuid MessageUID;
 
-	#define MESSAGE_MAX 2
-	#define RESULT_TIMEOUT 1000
+    #define MESSAGE_MAX 2
+    #define RESULT_TIMEOUT 1000
 
-	DECLARE(MessageHeader);
-	DECLARE(MessageResult);
-	DECLARE(MessageCommand);
-	DECLARE(MessageEvent);
-	DECLARE(PendingResult);
+    DECLARE(MessageHeader);
+    DECLARE(MessageResult);
+    DECLARE(MessageCommand);
+    DECLARE(MessageEvent);
+    DECLARE(PendingResult);
 
-	class PendingResult
-	{
+    class PendingResult
+    {
 
-		boost::condition_variable _resultCondition;
-		boost::mutex			  _resultMutex;
-		Buffer					  _resultBuffer;
-		int32_t					  _lastError;
+        boost::condition_variable _resultCondition;
+        boost::mutex              _resultMutex;
+        Buffer                      _resultBuffer;
+        int32_t                      _lastError;
 
-		PendingResult();
+        PendingResult();
 
-	public:
-		
-		static PendingResultPtr Create();
+    public:
+        
+        static PendingResultPtr Create();
 
-		template <typename T> T convertResult()
-		{
-			if (!_resultBuffer.size())
-				return T();
+        template <typename T> T convertResult()
+        {
+            if (!_resultBuffer.size())
+                return T();
 
-			T result;
-			Serializer<T>::deserializeItem(&result,&_resultBuffer.begin());
-			return result;
-		}
+            T result;
+            Serializer<T>::deserializeItem(&result,&_resultBuffer.begin());
+            return result;
+        }
 
-		template <typename T> T waitForResult()
-		{
+        template <typename T> T waitForResult()
+        {
 
-			boost::mutex::scoped_lock resultLock(_resultMutex);
+            boost::mutex::scoped_lock resultLock(_resultMutex);
 
-			if(_lastError)
-				return T();
+            if(_lastError)
+                return T();
 
-			if (!_resultBuffer.size())
-			{
-				boost::system_time const timeout = boost::get_system_time()+ boost::posix_time::milliseconds(RESULT_TIMEOUT);
+            if (!_resultBuffer.size())
+            {
+                boost::system_time const timeout = boost::get_system_time()+ boost::posix_time::milliseconds(RESULT_TIMEOUT);
 
-				if (!_resultCondition.timed_wait(resultLock,timeout))
-				{
-					_lastError = ERR_PYMT4_TIMEOUT;
-					return T();
-				}
-			}
+                if (!_resultCondition.timed_wait(resultLock,timeout))
+                {
+                    _lastError = ERR_PYMT4_TIMEOUT;
+                    return T();
+                }
+            }
 
-			
-			return convertResult<T>();
-		}
+            
+            return convertResult<T>();
+        }
 
-		int32_t& error();
-		void setError(const int32_t& error);
-		void setResult(BufferCPos begin,BufferCPos end);
+        int32_t& error();
+        void setError(const int32_t& error);
+        void setResult(BufferCPos begin,BufferCPos end);
 
-	};
+    };
 
-	class MessageHeader
-	{
-
-
-		MessageUID	_messageuid;
-
-	public:
-		Buffer& messageBuffer();
-		const MessageTypeIdentifier Type;
-		
-		Buffer _messageBuffer;
-
-		MessageHeader (const MessageTypeIdentifier& type);
-		void _serializeHeader();
-		
-		MessageUID& uid();
-
-	};
+    class MessageHeader
+    {
 
 
-	class MessageResult : public MessageHeader
-	{
+        MessageUID    _messageuid;
 
-	private:
-		MessageResult(const MessageTypeIdentifier& replyTo,const MessageUID& replyId);
+    public:
+        Buffer& messageBuffer();
+        const MessageTypeIdentifier Type;
+        
+        Buffer _messageBuffer;
 
-	public:
-		static MessageResultPtr Create(const MessageTypeIdentifier& replyTo,const MessageUID& replyId);
+        MessageHeader (const MessageTypeIdentifier& type);
+        void _serializeHeader();
+        
+        MessageUID& uid();
 
-	};
+    };
 
-	class MessageEvent : public MessageHeader
-	{
-		EventIdentifier _eventIdentifier;
-		MessageEvent(const EventIdentifier& eventIdentifier);
 
-	public:
-		static MessageEventPtr Create(const EventIdentifier& eventIdentifier);
+    class MessageResult : public MessageHeader
+    {
 
-	};
+    private:
+        MessageResult(const MessageTypeIdentifier& replyTo,const MessageUID& replyId);
 
-	class MessageCommand : public MessageHeader
-	{
-	private:
+    public:
+        static MessageResultPtr Create(const MessageTypeIdentifier& replyTo,const MessageUID& replyId);
 
-		
-		CommandIdentifier _commandIdentifier;
-		MessageCommand(const CommandIdentifier& commandIdentifier);
-	public:
+    };
 
-		static MessageCommandPtr Create(const CommandIdentifier& commandIdentifier);
+    class MessageEvent : public MessageHeader
+    {
+        EventIdentifier _eventIdentifier;
+        MessageEvent(const EventIdentifier& eventIdentifier);
 
-	};
+    public:
+        static MessageEventPtr Create(const EventIdentifier& eventIdentifier);
+
+    };
+
+    class MessageCommand : public MessageHeader
+    {
+    private:
+
+        
+        CommandIdentifier _commandIdentifier;
+        MessageCommand(const CommandIdentifier& commandIdentifier);
+    public:
+
+        static MessageCommandPtr Create(const CommandIdentifier& commandIdentifier);
+
+    };
 
 }

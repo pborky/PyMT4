@@ -63,32 +63,32 @@ namespace PyMT4
 struct ignore{};
 
 template <typename T> struct SerializeArgumentHelper {
-	void operator()(Buffer& serialized_buffer,T& arg) 
-	{	
+    void operator()(Buffer& serialized_buffer,T& arg) 
+    {    
 
-		Serializer<T>::serializeItem(&arg,&serialized_buffer);
-	}
+        Serializer<T>::serializeItem(&arg,&serialized_buffer);
+    }
 };
 
 template <> struct SerializeArgumentHelper<ignore>
 {void operator()(Buffer&,ignore&){}};
 
 struct SerializeArgument {
-	
-	void** _argptrs;
-	Buffer& _serialized_buffer;
+    
+    void** _argptrs;
+    Buffer& _serialized_buffer;
 
-	SerializeArgument(Buffer& serialized_buffer,void** arg_ptrs) :_argptrs(arg_ptrs), _serialized_buffer(serialized_buffer) {}
-	template <typename T> void operator()(T) { 
-		SerializeArgumentHelper< boost::mpl::at_c<T,0>::type >()(_serialized_buffer,*(boost::mpl::at_c<T,0>::type*)(_argptrs[boost::mpl::at_c<T,1>::type::value])); 
+    SerializeArgument(Buffer& serialized_buffer,void** arg_ptrs) :_argptrs(arg_ptrs), _serialized_buffer(serialized_buffer) {}
+    template <typename T> void operator()(T) { 
+        SerializeArgumentHelper< boost::mpl::at_c<T,0>::type >()(_serialized_buffer,*(boost::mpl::at_c<T,0>::type*)(_argptrs[boost::mpl::at_c<T,1>::type::value])); 
 }};
 
 template<typename T> struct AssignHelper {
-	template <int32_t I,typename T> void operator()(void** arg_ptrs,T* arg_ptr) {
-		arg_ptrs[I] = (void*)arg_ptr; }};
+    template <int32_t I,typename T> void operator()(void** arg_ptrs,T* arg_ptr) {
+        arg_ptrs[I] = (void*)arg_ptr; }};
 
 template<> struct AssignHelper<boost::mpl::true_> {
-	template <int32_t I,typename T> void operator()(void** arg_ptrs,T* arg_ptr){} };
+    template <int32_t I,typename T> void operator()(void** arg_ptrs,T* arg_ptr){} };
 
 using namespace boost;
 
@@ -120,55 +120,55 @@ extern boost::mutex _dispatchLock;
 
 
 template <typename R,BOOST_PP_REPEAT(ARG_MAX, ARG_TEMPLATE_DEC, ~) > struct DispatchFunction {
-	R inline operator()( const CommandIdentifier& commandIdentifier, BOOST_PP_REPEAT(ARG_MAX, ARG_SIGNATURE_DEC, ~) ){
+    R inline operator()( const CommandIdentifier& commandIdentifier, BOOST_PP_REPEAT(ARG_MAX, ARG_SIGNATURE_DEC, ~) ){
 
-		//boost::mutex::scoped_lock dispatchLock(_dispatchLock);
+        //boost::mutex::scoped_lock dispatchLock(_dispatchLock);
 
-		typedef BOOST_TYPEOF(&DispatchFunction::operator()) this_type;
-		typedef mpl::filter_view<mpl::transform_view<
-									mpl::pop_front< mpl::pop_front<boost::function_types::parameter_types<this_type>>::type >::type,
-									boost::remove_reference<mpl::placeholders::_> 
-											   >::type,
-								 boost::mpl::not_<boost::is_same<mpl::placeholders::_, ignore> > 
-								 >::type filtered_params;
+        typedef BOOST_TYPEOF(&DispatchFunction::operator()) this_type;
+        typedef mpl::filter_view<mpl::transform_view<
+                                    mpl::pop_front< mpl::pop_front<boost::function_types::parameter_types<this_type>>::type >::type,
+                                    boost::remove_reference<mpl::placeholders::_> 
+                                               >::type,
+                                 boost::mpl::not_<boost::is_same<mpl::placeholders::_, ignore> > 
+                                 >::type filtered_params;
 
-		typedef boost::mpl::size<filtered_params>::type this_arity;
-		typedef mpl::zip_view< mpl::vector< filtered_params, boost::mpl::range_c<int32_t, 0, this_arity::value>::type >::type >::type parameter_items;
+        typedef boost::mpl::size<filtered_params>::type this_arity;
+        typedef mpl::zip_view< mpl::vector< filtered_params, boost::mpl::range_c<int32_t, 0, this_arity::value>::type >::type >::type parameter_items;
 
-		void** arg_ptrs = NULL;
+        void** arg_ptrs = NULL;
 
-		if (this_arity::value) arg_ptrs = new void*[this_arity::value];
-
-
-#		define ARG_ASSIGN(z, n, unused) AssignHelper< mpl::greater_equal<boost::integral_constant<unsigned, n>, this_arity >::type >().operator()<n>(arg_ptrs, &arg ## n);
-#		define BOOST_PP_LOCAL_MACRO(n)   ARG_ASSIGN(~, n, ~)
-#		define BOOST_PP_LOCAL_LIMITS     (0, ARG_MAX - 1)
-#		include BOOST_PP_LOCAL_ITERATE()
-		
-		MessageCommandPtr messageCommand = MessageCommand::Create(commandIdentifier);
-		Buffer& messageBuffer = messageCommand->messageBuffer();
-
-		boost::mpl::for_each<parameter_items>(SerializeArgument(messageBuffer, arg_ptrs));
-
-		if (this_arity::value) delete[] arg_ptrs;
-
-		IOConnectorPtr connector = IOConnector::Instance();
-
-		PendingResultPtr pendingResult = connector->dispatchMessage(messageCommand);
-//		dispatchLock.unlock();
-
-		R resultValue = pendingResult->waitForResult<R>();
+        if (this_arity::value) arg_ptrs = new void*[this_arity::value];
 
 
-		{
-			boost::mutex::scoped_lock errorMapLock(_lastErrorMapLock);
-			int32_t lastError = pendingResult->error();
-			_lastErrorMap[boost::this_thread::get_id()] = lastError;
-		}
-		//dispatchLock.lock();
-		return resultValue;
+#        define ARG_ASSIGN(z, n, unused) AssignHelper< mpl::greater_equal<boost::integral_constant<unsigned, n>, this_arity >::type >().operator()<n>(arg_ptrs, &arg ## n);
+#        define BOOST_PP_LOCAL_MACRO(n)   ARG_ASSIGN(~, n, ~)
+#        define BOOST_PP_LOCAL_LIMITS     (0, ARG_MAX - 1)
+#        include BOOST_PP_LOCAL_ITERATE()
+        
+        MessageCommandPtr messageCommand = MessageCommand::Create(commandIdentifier);
+        Buffer& messageBuffer = messageCommand->messageBuffer();
 
-	} 
+        boost::mpl::for_each<parameter_items>(SerializeArgument(messageBuffer, arg_ptrs));
+
+        if (this_arity::value) delete[] arg_ptrs;
+
+        IOConnectorPtr connector = IOConnector::Instance();
+
+        PendingResultPtr pendingResult = connector->dispatchMessage(messageCommand);
+//        dispatchLock.unlock();
+
+        R resultValue = pendingResult->waitForResult<R>();
+
+
+        {
+            boost::mutex::scoped_lock errorMapLock(_lastErrorMapLock);
+            int32_t lastError = pendingResult->error();
+            _lastErrorMap[boost::this_thread::get_id()] = lastError;
+        }
+        //dispatchLock.lock();
+        return resultValue;
+
+    } 
 };
 
 }
